@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalji rezervacije</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/bookings"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Detalji rezervacije #{{ booking.id }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        <ion-label>
+          <h2>Datum početka:</h2>
+          <p>{{ booking.start_date | date: 'dd.MM.yyyy' }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        <ion-label>
+          <h2>Datum završetka:</h2>
+          <p>{{ booking.end_date | date: 'dd.MM.yyyy' }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-label>
+          <h2>Korisnik ID:</h2>
+          <p>{{ booking.user_id }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="bed-outline" slot="start"></ion-icon>
+        <ion-label>
+          <h2>Oglas ID:</h2>
+          <p>{{ booking.listing_id }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="flag-outline" slot="start"></ion-icon>
+        <ion-label>
+          <h2>Status:</h2>
+          <p>{{ booking.status }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

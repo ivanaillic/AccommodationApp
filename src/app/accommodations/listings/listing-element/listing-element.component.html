@@ -1,0 +1,36 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ listing.title }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-item lines="none">
+
+      <ion-avatar slot="start" style="width: 100px; height: 100px;">
+        <ion-img [src]="listing.image_url"></ion-img>
+      </ion-avatar>
+
+      <ion-label style="text-align: left;">
+        <ion-item>
+          <ion-icon name="location-outline" slot="start"></ion-icon>
+          <ion-label>Lokacija: {{ listing.location }}</ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label>Broj osoba: {{ listing.capacity_persons }}</ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="pricetag-outline" slot="start"></ion-icon>
+          <ion-label>Cena po danu: {{ listing.price_per_day }}$</ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="clipboard-outline" slot="start"></ion-icon>
+          <ion-label>Opis: {{ listing.description }}</ion-label>
+        </ion-item>
+      </ion-label>
+    </ion-item>
+  </ion-card-content>
+</ion-card>
