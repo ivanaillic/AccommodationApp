@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'accommodations',
     loadChildren: () => import('./accommodations/accommodations.module').then(m => m.AccommodationsPageModule)
   },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule)
+  },
 
 ];
 
