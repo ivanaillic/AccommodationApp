@@ -4,79 +4,92 @@
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-header collapse="condense">
-          <ion-toolbar>
-            <ion-title size="large" color="primary">Registracija korisnika</ion-title>
-          </ion-toolbar>
-        </ion-header>
-      </ion-col>
-    </ion-row>
-
-    <ion-list>
+  <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+    <ion-grid>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Ime</ion-label>
-            <ion-input type="text" ngModel name="firstName" required></ion-input>
+            <ion-input type="text" formControlName="firstName"></ion-input>
           </ion-item>
+          <ion-text *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
+            color="danger">
+            Ime je obavezno.
+          </ion-text>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Prezime</ion-label>
-            <ion-input type="text" ngModel name="lastName" required></ion-input>
+            <ion-input type="text" formControlName="lastName"></ion-input>
           </ion-item>
+          <ion-text *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
+            color="danger">
+            Prezime je obavezno.
+          </ion-text>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Godine</ion-label>
-            <ion-input type="number" ngModel name="age" required></ion-input>
+            <ion-input type="number" formControlName="age"></ion-input>
           </ion-item>
+          <ion-text *ngIf="registerForm.get('age')?.invalid && registerForm.get('age')?.touched" color="danger">
+            Godine su obavezne i moraju biti veće od 18.
+          </ion-text>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Korisničko ime</ion-label>
-            <ion-input type="text" ngModel name="username" required></ion-input>
+            <ion-input type="text" formControlName="username"></ion-input>
           </ion-item>
+          <ion-text *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+            color="danger">
+            Korisničko ime je obavezno.
+          </ion-text>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input type="email" ngModel name="email" required email></ion-input>
+            <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
+          <ion-text *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" color="danger">
+            Email je obavezan i mora biti u validnom formatu.
+          </ion-text>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Lozinka</ion-label>
-            <ion-input type="password" ngModel name="password" required minlength="7"></ion-input>
+            <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
+          <ion-text *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            color="danger">
+            Lozinka je obavezna i mora imati najmanje 7 karaktera.
+          </ion-text>
         </ion-col>
       </ion-row>
 
-    </ion-list>
-    <ion-row>
-      <ion-col size-sm="6" offset-sm="3">
-        <ion-button type="submit" color="primary" shape="round" expand="block">Registruj se</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-button type="submit" color="primary" shape="round" expand="block"
+            [disabled]="!registerForm.valid">Registruj se</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +15,14 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  onLogIn() {
-    this.authService.logIn();
-    this.router.navigateByUrl('/accommodations/tabs/homepage');
+  onLogIn(logInForm: NgForm) {
+    if (logInForm.valid) {
+      this.authService.logIn();
+      this.router.navigateByUrl('/accommodations/tabs/homepage');
+    }
+  }
+  goToRegister() {
+    this.router.navigateByUrl('/auth/register');
   }
 
 }
