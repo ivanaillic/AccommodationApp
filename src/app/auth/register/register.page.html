@@ -16,7 +16,7 @@
           </ion-item>
           <ion-text *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
             color="danger">
-            Ime je obavezno.
+            Unesite ime.
           </ion-text>
         </ion-col>
       </ion-row>
@@ -29,7 +29,7 @@
           </ion-item>
           <ion-text *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
             color="danger">
-            Prezime je obavezno.
+            Unesite prezime.
           </ion-text>
         </ion-col>
       </ion-row>
@@ -41,7 +41,7 @@
             <ion-input type="number" formControlName="age"></ion-input>
           </ion-item>
           <ion-text *ngIf="registerForm.get('age')?.invalid && registerForm.get('age')?.touched" color="danger">
-            Godine su obavezne i moraju biti veće od 18.
+            Godine moraju biti veće od 18.
           </ion-text>
         </ion-col>
       </ion-row>
@@ -54,7 +54,7 @@
           </ion-item>
           <ion-text *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
             color="danger">
-            Korisničko ime je obavezno.
+            Unesite korisničko ime.
           </ion-text>
         </ion-col>
       </ion-row>
@@ -66,7 +66,7 @@
             <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
           <ion-text *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" color="danger">
-            Email je obavezan i mora biti u validnom formatu.
+            Unesite email u validnom formatu.
           </ion-text>
         </ion-col>
       </ion-row>
@@ -79,7 +79,7 @@
           </ion-item>
           <ion-text *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
             color="danger">
-            Lozinka je obavezna i mora imati najmanje 7 karaktera.
+            Unesite lozinku koja ima najmanje 7 karaktera.
           </ion-text>
         </ion-col>
       </ion-row>
@@ -87,7 +87,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-button type="submit" color="primary" shape="round" expand="block"
-            [disabled]="!registerForm.valid">Registruj se</ion-button>
+            [disabled]="!registerForm.valid">Registrujte se</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

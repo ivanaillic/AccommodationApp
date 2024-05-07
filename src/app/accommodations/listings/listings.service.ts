@@ -1,46 +1,109 @@
 import { Injectable } from '@angular/core';
-import { Listing } from './listing.model';
+import { Listing } from "./listing.model";
+import { HttpClient } from "@angular/common/http";
+import { BehaviorSubject, map, switchMap, take, tap } from "rxjs";
+
+
+interface ListingData {
+  title: string;
+  description: string;
+  price_per_day: number;
+  location: string;
+  capacity_persons: number;
+  image_url: string;
+  user_id: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ListingsService {
 
-  listings: Listing[] = [{
-    id: 1,
-    title: 'Divna Koliba u Planinama',
-    description: 'Udobna koliba sa predivnim pogledom na planine.',
-    price_per_day: 100,
-    location: 'Planina',
-    capacity_persons: 4,
-    image_url: 'https://static.leonardo-hotels.com/image/leonardohotelbucharestcitycenter_room_comfortdouble2_2022_4000x2600_7e18f254bc75491965d36cc312e8111f_2048x1331_desktop_2.webp',
-    user_id: 1
-  }, {
-    id: 2,
-    title: 'Elegantan Stan u Centru Grada',
-    description: 'Luksuzno namešten stan u blizini svih gradskih atrakcija.',
-    price_per_day: 150,
-    location: 'Grad',
-    capacity_persons: 2,
-    image_url: 'https://static.leonardo-hotels.com/image/leonardohotelbucharestcitycenter_room_comfortdouble2_2022_4000x2600_7e18f254bc75491965d36cc312e8111f_2048x1331_desktop_2.webp',
-    user_id: 2
-  }, {
-    id: 3,
-    title: 'Prostrana Kuća pored Jezera',
-    description: 'Kuća sa velikim dvorištem i pristupom jezeru.',
-    price_per_day: 200,
-    location: 'Jezero',
-    capacity_persons: 6,
-    image_url: 'https://static.leonardo-hotels.com/image/leonardohotelbucharestcitycenter_room_comfortdouble2_2022_4000x2600_7e18f254bc75491965d36cc312e8111f_2048x1331_desktop_2.webp',
-    user_id: 3
-  }];
+  private _listings = new BehaviorSubject<Listing[]>([]);
 
-  //constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getListing(id: number): Listing | undefined {
-    return this.listings.find((l) => l.id === id);
+  getListings() {
+    return this._listings.asObservable();
   }
 
+  addListing(title: string, description: string, price_per_day: number, location: string, capacity_persons: number, imageUrl: string, user_id: number) {
+    let generatedId: string;
+    return this.http.post<{ name: string }>(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json`,
+      {
+        title,
+        description,
+        price_per_day,
+        location,
+        capacity_persons,
+        image_url: imageUrl,
+        user_id: user_id
+      }).pipe(
+        switchMap((resData) => {
+          generatedId = resData.name;
+          return this.getListings();
+        }),
+        take(1),
+        tap((listings) => {
+          this._listings.next(
+            listings.concat({
+              id: generatedId,
+              title,
+              description,
+              price_per_day,
+              location,
+              capacity_persons,
+              image_url: imageUrl,
+              user_id: user_id
+            })
+          )
+        })
+      );
+  }
 
+  fetchListings() {
+    return this.http.get<{ [key: string]: ListingData }>(`https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json`)
+      .pipe(map((listingsData: any) => {
+        const listings: Listing[] = [];
+        for (const key in listingsData) {
+          if (listingsData.hasOwnProperty(key)) {
+            listings.push({
+              id: key,
+              title: listingsData[key].title,
+              description: listingsData[key].description,
+              price_per_day: listingsData[key].price_per_day,
+              location: listingsData[key].location,
+              capacity_persons: listingsData[key].capacity_persons,
+              image_url: listingsData[key].image_url,
+              user_id: listingsData[key].user_id
+            });
+          }
+        }
+        return listings;
+      }),
+        tap((listings) => {
+          this._listings.next(listings);
+        }));
+  }
 
+  getListing(id: string) {
+    return this.http.get<ListingData>(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json`
+    )
+      .pipe(
+        map((listingData) => {
+          return {
+            id,
+            title: listingData.title,
+            description: listingData.description,
+            price_per_day: listingData.price_per_day,
+            location: listingData.location,
+            capacity_persons: listingData.capacity_persons,
+            image_url: listingData.image_url,
+            user_id: listingData.user_id
+          };
+        })
+      );
+  }
 }

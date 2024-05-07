@@ -12,4 +12,5 @@ export class ListingsPage implements OnInit {
   ngOnInit() {
   }
 
+
 }

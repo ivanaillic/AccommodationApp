@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Dodaj oglas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Zatvori</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="listingForm" (ngSubmit)="addListing()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Naslov</ion-label>
+        <ion-input formControlName="title" type="text"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="listingForm.get('title')?.invalid && listingForm.get('title')?.touched">
+        <ion-text color="danger" slot="end">Unesite naslov oglasa.</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Opis</ion-label>
+        <ion-textarea formControlName="description" rows="4"></ion-textarea>
+      </ion-item>
+
+      <ion-item *ngIf="listingForm.get('description')?.invalid && listingForm.get('description')?.touched">
+        <ion-text color="danger" slot="end">Unesite opis oglasa.</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Cena po danu</ion-label>
+        <ion-input formControlName="price_per_day" type="number"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="listingForm.get('price_per_day')?.invalid && listingForm.get('price_per_day')?.touched">
+        <ion-text color="danger" slot="end">Unesite cenu po danu.</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Lokacija</ion-label>
+        <ion-input formControlName="location" type="text"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="listingForm.get('location')?.invalid && listingForm.get('location')?.touched">
+        <ion-text color="danger" slot="end">Unesite lokaciju smeštaja</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Kapacitet osoba</ion-label>
+        <ion-input formControlName="capacity_persons" type="number"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="listingForm.get('capacity_persons')?.invalid && listingForm.get('capacity_persons')?.touched">
+        <ion-text color="danger" slot="end">Unesite kapacitet osoba po smeštaju.</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Slika URL</ion-label>
+        <ion-input formControlName="image_url" type="text"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="listingForm.get('image_url')?.invalid && listingForm.get('image_url')?.touched">
+        <ion-text color="danger" slot="end">Unesite URL slike.</ion-text>
+      </ion-item>
+    </ion-list>
+
+    <ion-button type="submit" expand="block" [disabled]="listingForm.invalid">Kreiraj oglas</ion-button>
+  </form>
+</ion-content>
