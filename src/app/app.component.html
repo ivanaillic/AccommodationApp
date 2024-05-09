@@ -29,18 +29,20 @@
             <ion-label>Bookings</ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle>
-          <ion-item routerLink="/auth/login">
-            <ion-icon name="log-in" slot="start"></ion-icon>
-            <ion-label>Login</ion-label>
+        <ion-menu-toggle *ngIf="isAuthenticated$ | async; else showLogin">
+          <ion-item (click)="onLogout()">
+            <ion-icon name="log-out" slot="start"></ion-icon>
+            <ion-label>Logout</ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <!-- <ion-menu-toggle>
-          <ion-item>
-            <ion-icon name="log-out" slot="start"></ion-icon>
-            <ion-label>Log Out</ion-label>
-          </ion-item>
-        </ion-menu-toggle> -->
+        <ng-template #showLogin>
+          <ion-menu-toggle>
+            <ion-item routerLink="/auth/login">
+              <ion-icon name="log-in" slot="start"></ion-icon>
+              <ion-label>Login</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ng-template>
       </ion-list>
     </ion-content>
   </ion-menu>

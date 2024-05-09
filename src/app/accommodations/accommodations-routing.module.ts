@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, mapToCanActivate } from '@angular/router';
 
 import { AccommodationsPage } from './accommodations.page';
-import { AdminGuard } from '../auth/auth.guard';
+import { authGuard } from '../auth/auth.guard';
 
 
 const routes: Routes = [
@@ -20,12 +20,12 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () => import('./bookings/bookings.module').then(m => m.BookingsPageModule),
-            canActivate: [AdminGuard],
+            canActivate: [authGuard],
           },
           {
             path: 'details',
             loadChildren: () => import('./bookings/details/details.module').then(m => m.DetailsPageModule),
-            canActivate: [AdminGuard],
+            canActivate: [authGuard],
           }
         ]
       },

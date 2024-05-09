@@ -15,7 +15,7 @@ export class ListingElementComponent implements OnInit {
     location: 'Zlatibor, Srbija',
     capacity_persons: 6,
     image_url: 'https://www.pexels.com/photo/view-of-tourist-resort-338504/',
-    user_id: 2
+    user_id: "u2"
   };
   constructor(private alertController: AlertController) { }
 

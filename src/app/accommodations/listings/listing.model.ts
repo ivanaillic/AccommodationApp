@@ -6,5 +6,5 @@ export interface Listing {
     location: string;
     capacity_persons: number;
     image_url: string;
-    user_id: number;
+    user_id: string;
 }

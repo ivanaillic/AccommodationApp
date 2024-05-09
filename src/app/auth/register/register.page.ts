@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,24 +10,38 @@ import { Router } from '@angular/router';
 })
 export class RegisterPage implements OnInit {
 
-  registerForm: FormGroup = this.formBuilder.group({
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    age: ['', [Validators.required, Validators.min(18)]],
-    username: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(7)]]
-  });
+  registerForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private formBuilder: FormBuilder,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.registerForm = this.formBuilder.group({
+      firstName: [null, Validators.required],
+      lastName: [null, Validators.required],
+      age: [null, [Validators.required, Validators.min(18)]],
+      username: [null, Validators.required],
+      email: [null, [Validators.required, Validators.email]],
+      password: [null, [Validators.required, Validators.minLength(7)]]
+    });
   }
 
   onSubmit() {
     if (this.registerForm.valid) {
       console.log('Forma je validna i podaci su:', this.registerForm.value);
-      this.router.navigate(['/auth/login']);
+      this.authService.register(this.registerForm.value).subscribe(
+        resData => {
+          console.log('Registracija uspela');
+          console.log(resData);
+          this.router.navigate(['/auth/login']);
+        },
+        error => {
+          console.error('Greška prilikom registracije:', error);
+        }
+      );
     } else {
       console.log('Molimo popunite ispravno sva polja.');
     }
