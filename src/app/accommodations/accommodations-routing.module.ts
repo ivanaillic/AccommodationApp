@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, mapToCanActivate } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AccommodationsPage } from './accommodations.page';
 import { authGuard } from '../auth/auth.guard';
@@ -55,9 +55,14 @@ const routes: Routes = [
     path: '',
     redirectTo: '/accommodations/tabs/homepage',
     pathMatch: 'full'
-  },  {
+  },
+  {
     path: 'my-listings',
-    loadChildren: () => import('./my-listings/my-listings.module').then( m => m.MyListingsPageModule)
+    loadChildren: () => import('./my-listings/my-listings.module').then(m => m.MyListingsPageModule)
+  },
+  {
+    path: 'edit-listing-modal',
+    loadChildren: () => import('./edit-listing-modal/edit-listing-modal.module').then(m => m.EditListingModalPageModule)
   },
 
 ];

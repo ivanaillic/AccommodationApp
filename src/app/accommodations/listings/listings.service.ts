@@ -120,4 +120,26 @@ export class ListingsService {
       })
     );
   }
+
+  updateListing(id: string, updatedListingData: Partial<ListingData>) {
+    return this.http.patch(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json`,
+      updatedListingData
+    ).pipe(
+      switchMap(() => {
+        return this.getListings();
+      }),
+      take(1),
+      tap((listings) => {
+        const updatedListings = listings.map(listing => {
+          if (listing.id === id) {
+            return { ...listing, ...updatedListingData };
+          }
+          return listing;
+        });
+        this._listings.next(updatedListings);
+      })
+    );
+  }
+
 }

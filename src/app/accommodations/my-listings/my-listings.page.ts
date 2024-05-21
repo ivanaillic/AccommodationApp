@@ -3,6 +3,9 @@ import { ListingsService } from '../listings/listings.service';
 import { Listing } from '../listings/listing.model';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ModalController } from '@ionic/angular';
+import { EditListingModalPage } from '../edit-listing-modal/edit-listing-modal.page';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-my-listings',
@@ -13,7 +16,12 @@ export class MyListingsPage implements OnInit {
   myListings: Listing[] = [];
   userId$: Observable<string | null>;
 
-  constructor(private listingsService: ListingsService, private authService: AuthService) {
+  constructor(
+    private listingsService: ListingsService,
+    private authService: AuthService,
+    private modalController: ModalController,
+    private location: Location
+  ) {
     this.userId$ = this.authService.getUserId();
   }
 
@@ -37,8 +45,25 @@ export class MyListingsPage implements OnInit {
     });
   }
 
-  editListing(id: string) {
+  async openEditModal(listing: Listing) {
+    const modal = await this.modalController.create({
+      component: EditListingModalPage,
+      componentProps: {
+        listing: listing
+      }
+    });
+    await modal.present();
 
+    const { data } = await modal.onDidDismiss();
+    if (data && data.updatedListing) {
+      const index = this.myListings.findIndex(item => item.id === data.updatedListing.id);
+      if (index !== -1) {
+        this.myListings[index] = data.updatedListing;
+      }
+    }
   }
 
+  goBack() {
+    this.location.back();
+  }
 }

@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Uredi oglas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label position="floating">Naslov</ion-label>
+      <ion-input type="text" [(ngModel)]="editedListing.title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Opis</ion-label>
+      <ion-textarea rows="6" [(ngModel)]="editedListing.description"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Cena po danu</ion-label>
+      <ion-input type="number" [(ngModel)]="editedListing.price_per_day"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Lokacija</ion-label>
+      <ion-input type="text" [(ngModel)]="editedListing.location"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Kapacitet osoba</ion-label>
+      <ion-input type="number" [(ngModel)]="editedListing.capacity_persons"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Slika URL</ion-label>
+      <ion-input type="text" [(ngModel)]="editedListing.image_url"></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-button expand="block" class="save-button" (click)="saveChanges()">Sačuvaj izmene</ion-button>
+</ion-content>

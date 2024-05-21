@@ -1,6 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>My Listings</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Moji oglasi</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,7 +16,7 @@
         <h2>{{ listing.title }}</h2>
         <p>{{ listing.description }}</p>
       </ion-label>
-      <ion-button fill="clear" color="primary" (click)="editListing(listing.id)">
+      <ion-button fill="clear" color="primary" (click)="openEditModal(listing)">
         <ion-icon name="create" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button fill="clear" color="danger" (click)="onDeleteListing(listing.id)">
