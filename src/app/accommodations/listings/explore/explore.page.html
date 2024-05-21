@@ -1,20 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>explore</ion-title>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-searchbar (ionInput)="filterListings($event)" placeholder="Pretraži oglase"></ion-searchbar>
     <ion-button slot="end" (click)="openListingsModal()">
       <ion-icon name="add-circle"></ion-icon>
     </ion-button>
   </ion-toolbar>
 </ion-header>
 
-
-
 <ion-content [fullscreen]="true">
   <ion-list>
-    <app-listing-element *ngFor="let listing of listings" [listing]="listing"></app-listing-element>
+    <app-listing-element *ngFor="let listing of filteredListings" [listing]="listing"></app-listing-element>
   </ion-list>
   <ion-header collapse="condense">
     <ion-toolbar>

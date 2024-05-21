@@ -55,7 +55,11 @@ const routes: Routes = [
     path: '',
     redirectTo: '/accommodations/tabs/homepage',
     pathMatch: 'full'
+  },  {
+    path: 'my-listings',
+    loadChildren: () => import('./my-listings/my-listings.module').then( m => m.MyListingsPageModule)
   },
+
 ];
 
 @NgModule({

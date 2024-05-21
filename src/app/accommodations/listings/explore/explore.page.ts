@@ -12,12 +12,14 @@ import { ListingsModalComponent } from '../listings-modal/listings-modal.compone
 export class ExplorePage implements OnInit {
 
   listings: Listing[] = [];
+  filteredListings: Listing[] = [];
 
   constructor(private listingsService: ListingsService, private modalController: ModalController) { }
 
   ngOnInit() {
     this.listingsService.getListings().subscribe((listings) => {
       this.listings = listings;
+      this.filteredListings = listings;
     });
   }
 
@@ -42,5 +44,17 @@ export class ExplorePage implements OnInit {
     }
   }
 
+  filterListings(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
+    if (!searchTerm) {
+      this.filteredListings = this.listings;
+      return;
+    }
 
+    this.filteredListings = this.listings.filter(listing => {
+      return listing.title.toLowerCase().includes(searchTerm) ||
+        listing.description.toLowerCase().includes(searchTerm) ||
+        listing.location.toLowerCase().includes(searchTerm);
+    });
+  }
 }

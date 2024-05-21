@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject } from 'rxjs';
-import { tap, switchMap, take, map } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
+import { tap, switchMap, take, map, catchError } from 'rxjs/operators';
 import { Listing } from "./listing.model";
+import { AuthService } from 'src/app/auth/auth.service';
 
 interface ListingData {
   title: string;
@@ -21,7 +22,7 @@ export class ListingsService {
 
   private _listings = new BehaviorSubject<Listing[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   getListings() {
     return this._listings.asObservable();
@@ -62,27 +63,28 @@ export class ListingsService {
   }
 
   fetchListings() {
-    return this.http.get<{ [key: string]: ListingData }>(`https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json`)
-      .pipe(
-        tap((listingsData: any) => {
-          const listings: Listing[] = [];
-          for (const key in listingsData) {
-            if (listingsData.hasOwnProperty(key)) {
-              listings.push({
-                id: key,
-                title: listingsData[key].title,
-                description: listingsData[key].description,
-                price_per_day: listingsData[key].price_per_day,
-                location: listingsData[key].location,
-                capacity_persons: listingsData[key].capacity_persons,
-                image_url: listingsData[key].image_url,
-                user_id: listingsData[key].user_id
-              });
-            }
+    return this.http.get<{ [key: string]: ListingData }>(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json`
+    ).pipe(
+      tap((listingsData) => {
+        const listings: Listing[] = [];
+        for (const key in listingsData) {
+          if (listingsData.hasOwnProperty(key)) {
+            listings.push({
+              id: key,
+              title: listingsData[key].title,
+              description: listingsData[key].description,
+              price_per_day: listingsData[key].price_per_day,
+              location: listingsData[key].location,
+              capacity_persons: listingsData[key].capacity_persons,
+              image_url: listingsData[key].image_url,
+              user_id: listingsData[key].user_id
+            });
           }
-          this._listings.next(listings);
-        })
-      );
+        }
+        this._listings.next(listings);
+      })
+    );
   }
 
   getListing(id: string) {
@@ -100,6 +102,21 @@ export class ListingsService {
           image_url: listingData.image_url,
           user_id: listingData.user_id
         };
+      })
+    );
+  }
+
+
+  deleteListing(id: string) {
+    return this.http.delete(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json`
+    ).pipe(
+      switchMap(() => {
+        return this.getListings();
+      }),
+      take(1),
+      tap((listings) => {
+        this._listings.next(listings.filter(listing => listing.id !== id));
       })
     );
   }
