@@ -26,6 +26,11 @@ const routes: Routes = [
             path: 'details',
             loadChildren: () => import('./bookings/details/details.module').then(m => m.DetailsPageModule),
             canActivate: [authGuard],
+          },
+          {
+            path: 'booking/:listingId',
+            loadChildren: () => import('./bookings/booking/booking.module').then(m => m.BookingPageModule),
+            canActivate: [authGuard]
           }
         ]
       },

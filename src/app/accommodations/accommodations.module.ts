@@ -8,6 +8,7 @@ import { AccommodationsPageRoutingModule } from './accommodations-routing.module
 
 import { AccommodationsPage } from './accommodations.page';
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -17,4 +18,4 @@ import { AccommodationsPage } from './accommodations.page';
   ],
   declarations: [AccommodationsPage]
 })
-export class AccommodationsPageModule {}
+export class AccommodationsPageModule { }

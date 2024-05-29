@@ -1,19 +1,9 @@
 <ion-card>
   <ion-card-header>
-    <ion-card-title>Rezervacija broj: {{ booking.id }}</ion-card-title>
+    <ion-card-title>Rezervacija za: {{ getListingTitle(booking.listing_id) }}</ion-card-title>
   </ion-card-header>
 
   <ion-card-content>
-    <!-- <ion-item>
-      <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-label>ID korisnika: {{ booking.user_id }}</ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-icon name="location-outline" slot="start"></ion-icon>
-      <ion-label>ID oglasa: {{ booking.listing_id }}</ion-label>
-    </ion-item> -->
-
     <ion-item>
       <ion-icon name="calendar-outline" slot="start"></ion-icon>
       <ion-label>Datum početka: {{ booking.start_date | date }}</ion-label>
@@ -30,6 +20,5 @@
       <ion-icon name="close-circle-outline" slot="start" *ngIf="booking.status === 'cancelled'"></ion-icon>
       <ion-label>Status: {{ booking.status }}</ion-label>
     </ion-item>
-
   </ion-card-content>
 </ion-card>

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/auth.service';
+import { Booking } from './booking.model';
+import { BookingService } from './booking/booking.service';
 
 @Component({
   selector: 'app-bookings',
@@ -6,10 +9,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./bookings.page.scss'],
 })
 export class BookingsPage implements OnInit {
+  bookings: Booking[] = [];
 
-  constructor() { }
+  constructor(
+    private bookingService: BookingService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
+    this.authService.getUserId().subscribe(userId => {
+      if (userId) {
+        this.bookingService.getBookingsByUserId(userId).subscribe(bookings => {
+          this.bookings = bookings;
+        });
+      }
+    });
   }
-
 }

@@ -10,9 +10,9 @@ import { BookingsService } from '../../bookings.service';
 })
 export class BookingDetailsPage implements OnInit {
   booking: Booking = {
-    id: 1,
-    user_id: 101,
-    listing_id: 201,
+    id: '1',
+    user_id: '101',
+    listing_id: '201',
     start_date: new Date('2024-04-10'),
     end_date: new Date('2024-04-15'),
     status: 'confirmed'

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, switchMap, take, map, catchError } from 'rxjs/operators';
 import { Listing } from "./listing.model";
 import { AuthService } from 'src/app/auth/auth.service';
@@ -141,5 +141,16 @@ export class ListingsService {
       })
     );
   }
+
+  getListingTitle(listingId: string): Observable<string> {
+    return this.http.get<ListingData>(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${listingId}.json`
+    ).pipe(
+      map((listingData) => {
+        return listingData.title;
+      })
+    );
+  }
+
 
 }

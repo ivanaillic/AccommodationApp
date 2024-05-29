@@ -1,7 +1,7 @@
 export interface Booking {
-    id: number;
-    user_id: number;
-    listing_id: number;
+    id: string;
+    user_id: string;
+    listing_id: string;
     start_date: Date;
     end_date: Date;
     status: string;

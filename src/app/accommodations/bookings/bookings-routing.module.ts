@@ -7,10 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: BookingsPage
-  },  {
+  },
+  /* {
     path: 'details',
     loadChildren: () => import('./details/details.module').then( m => m.DetailsPageModule)
-  }
+  } */
 
 ];
 
@@ -18,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BookingsPageRoutingModule {}
+export class BookingsPageRoutingModule { }

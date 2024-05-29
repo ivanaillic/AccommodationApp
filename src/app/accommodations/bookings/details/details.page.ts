@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Booking } from '../booking.model';
-import { BookingsService } from '../bookings.service';
+import { BookingService } from '../booking/booking.service';
+
 
 @Component({
   selector: 'app-details',
@@ -8,13 +9,13 @@ import { BookingsService } from '../bookings.service';
   styleUrls: ['./details.page.scss'],
 })
 export class DetailsPage implements OnInit {
-  bookings: Booking[];
+  bookings: Booking[] = [];
 
-  constructor(private bookingsService: BookingsService) {
-    this.bookings = this.bookingsService.bookings;
-  }
+  constructor(private bookingService: BookingService) { }
 
   ngOnInit() {
+    this.bookingService.fetchBookings().subscribe(bookings => {
+      this.bookings = bookings;
+    });
   }
-
 }

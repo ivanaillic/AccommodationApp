@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Rezervacija</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Odaberite datume</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Početni datum</ion-label>
+        <ion-datetime display-format="MM DD YYYY" [(ngModel)]="startDate"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label>Krajnji datum</ion-label>
+        <ion-datetime display-format="MM DD YYYY" [(ngModel)]="endDate"></ion-datetime>
+      </ion-item>
+      <ion-list>
+        <ion-item *ngFor="let request of specialRequests; let i = index">
+          <ion-label>Specijalni zahtev {{i + 1}}</ion-label>
+          <ion-input [value]="request" (ionChange)="onSpecialRequestChange($event, i)"
+            placeholder="Unesite specijalni zahtev"></ion-input>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" (click)="addSpecialRequest()">Dodaj specijalni zahtev</ion-button>
+      <ion-button expand="block" (click)="confirmBooking()">Potvrdi</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
