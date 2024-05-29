@@ -56,6 +56,7 @@ export class AuthService {
           userData.idToken,
           expirationTime
         );
+        console.log('Dobijen je korisnički ID:', userData.localId);
         this._user.next(newUser);
         this._isUserAuthenticated.next(true);
       })
@@ -86,7 +87,11 @@ export class AuthService {
 
   getUserId(): Observable<string | null> {
     return this.user.pipe(
+      tap(userId => {
+        console.log('Dobijen korisnički ID:', userId);
+      }),
       map(user => user ? user.id : null)
     );
   }
+
 }
