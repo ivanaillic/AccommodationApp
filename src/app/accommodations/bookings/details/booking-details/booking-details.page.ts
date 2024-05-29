@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Booking } from '../../booking.model';
 import { ActivatedRoute } from '@angular/router';
 import { BookingsService } from '../../bookings.service';
+import { SpecialRequest } from '../../booking/special-request.model';
+
 
 @Component({
   selector: 'app-booking-details',
@@ -9,23 +11,42 @@ import { BookingsService } from '../../bookings.service';
   styleUrls: ['./booking-details.page.scss'],
 })
 export class BookingDetailsPage implements OnInit {
-  booking: Booking = {
-    id: '1',
-    user_id: '101',
-    listing_id: '201',
-    start_date: new Date('2024-04-10'),
-    end_date: new Date('2024-04-15'),
-    status: 'confirmed'
-  };
-
+  booking!: Booking;
+  specialRequests: SpecialRequest[] = [];
 
   constructor(private route: ActivatedRoute, private bookingsService: BookingsService) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
-      const bookingId = Number(paramMap.get('bookingId'));
-      this.booking = this.bookingsService.getBooking(bookingId);
+      const bookingId = paramMap.get('bookingId');
+      if (bookingId) {
+        this.bookingsService.getBooking(bookingId).subscribe(
+          (booking: Booking) => {
+            this.booking = booking;
+            this.fetchSpecialRequests(bookingId);
+          },
+          (error) => {
+            console.error('Greška prilikom dohvatanja rezervacije:', error);
+          }
+        );
+      }
     });
+  }
+
+  fetchSpecialRequests(bookingId: string) {
+    this.bookingsService.getSpecialRequestsByBookingId(bookingId).subscribe(
+      (specialRequestsData: any) => {
+        if (specialRequestsData) {
+          this.specialRequests = Object.values(specialRequestsData);
+        } else {
+          console.error('Nije uspelo dohvatanje specijalnih zahteva.');
+          this.specialRequests = [];
+        }
+      },
+      (error) => {
+        console.error('Greška prilikom dohvatanja specijalnih zahteva:', error);
+      }
+    );
   }
 
 }

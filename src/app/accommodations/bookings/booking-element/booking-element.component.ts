@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Booking } from '../booking.model';
 import { ListingsService } from '../../listings/listings.service';
+import { SpecialRequest } from '../booking/special-request.model';
+import { BookingsService } from '../bookings.service';
 
 
 @Component({
@@ -18,16 +20,36 @@ export class BookingElementComponent implements OnInit {
     status: 'confirmed'
   };
   listingTitle: string = '';
+  specialRequests: SpecialRequest[] = [];
 
-  constructor(private listingService: ListingsService) { }
+  constructor(
+    private listingService: ListingsService,
+    private bookingsService: BookingsService
+
+  ) { }
 
   ngOnInit() {
     this.getListingTitle(this.booking.listing_id);
+    this.fetchSpecialRequests(this.booking.id);
   }
+
 
   getListingTitle(listingId: string): void {
     this.listingService.getListingTitle(listingId).subscribe(title => {
       this.listingTitle = title;
     });
   }
+
+
+  fetchSpecialRequests(bookingId: string) {
+    this.bookingsService.getSpecialRequestsByBookingId(bookingId).subscribe(
+      (specialRequests: SpecialRequest[]) => {
+        this.specialRequests = specialRequests;
+      },
+      (error) => {
+        console.error('Greška prilikom dohvatanja specijalnih zahteva:', error);
+      }
+    );
+  }
 }
+

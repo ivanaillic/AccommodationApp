@@ -107,9 +107,6 @@ export class BookingService {
     );
   }
 
-
-
-
   getBookingsByUserId(userId: string): Observable<Booking[]> {
     return this.http.get<{ [key: string]: BookingData }>(
       `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json`

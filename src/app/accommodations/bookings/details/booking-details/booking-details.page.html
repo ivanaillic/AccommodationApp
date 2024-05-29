@@ -1,19 +1,28 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Detalji rezervacije</ion-title>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/bookings"></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <ion-card>
+  <ion-card *ngIf="booking">
     <ion-card-header>
-      <ion-card-title>Detalji rezervacije #{{ booking.id }}</ion-card-title>
+      <ion-card-title>Detalji rezervacije</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
+      <div *ngIf="specialRequests.length === 0">
+        <ion-item>
+          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h2>Specijalni zahtev:</h2>
+            <p>Nema specijalnih zahteva</p>
+          </ion-label>
+        </ion-item>
+      </div>
+
+      <ion-item *ngFor="let request of specialRequests">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <ion-label>
+          <h2>Specijalni zahtev:</h2>
+          <p>{{ request.description }}</p>
+        </ion-label>
+      </ion-item>
+
       <ion-item>
         <ion-icon name="calendar-outline" slot="start"></ion-icon>
         <ion-label>
@@ -54,5 +63,8 @@
         </ion-label>
       </ion-item>
     </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="!booking">
+    <ion-spinner></ion-spinner>
   </ion-card>
 </ion-content>

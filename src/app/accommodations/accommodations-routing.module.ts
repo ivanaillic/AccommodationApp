@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { AccommodationsPage } from './accommodations.page';
 import { authGuard } from '../auth/auth.guard';
 
@@ -30,6 +29,11 @@ const routes: Routes = [
           {
             path: 'booking/:listingId',
             loadChildren: () => import('./bookings/booking/booking.module').then(m => m.BookingPageModule),
+            canActivate: [authGuard]
+          },
+          {
+            path: 'booking-details/:bookingId',
+            loadChildren: () => import('./bookings/details/booking-details/booking-details.module').then(m => m.BookingDetailsPageModule),
             canActivate: [authGuard]
           }
         ]
