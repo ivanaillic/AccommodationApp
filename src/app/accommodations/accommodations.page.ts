@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-accommodations',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccommodationsPage implements OnInit {
 
-  constructor() { }
+  isAuthenticated$: Observable<boolean>;
+
 
   ngOnInit() {
   }
 
+  constructor(private authService: AuthService) {
+    this.isAuthenticated$ = this.authService.isUserAuthenticated;
+  }
 }

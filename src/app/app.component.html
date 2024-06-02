@@ -1,45 +1,46 @@
 <ion-app>
   <ion-menu side="start" contentId="main">
     <ion-header>
-      <ion-toolbar>
-        <ion-title>
-          Accommodation App
-        </ion-title>
+      <ion-toolbar color="primary">
+        <ion-title>Stay Finder</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <ion-list lines="none">
+        <ion-menu-toggle *ngIf="isAuthenticated$ | async;">
+          <ion-item routerLink="/accommodations/my-listings" lines="none">
+            <ion-icon name="list-circle" slot="start"></ion-icon>
+            <ion-label>Moji oglasi</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
 
         <ion-menu-toggle>
-          <ion-item routerLink="/accommodations/my-listings">
-            <ion-icon name="list-circle" slot="start"></ion-icon>
-            <ion-label>My Listings</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle>
-          <ion-item routerLink="/accommodations/tabs/listings/explore">
+          <ion-item routerLink="/accommodations/tabs/listings/explore" lines="none">
             <ion-icon name="compass" slot="start"></ion-icon>
-            <ion-label>Explore</ion-label>
+            <ion-label>Pretraga oglasa</ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle>
-          <ion-item routerLink="/accommodations/tabs/bookings/details">
+
+        <ion-menu-toggle *ngIf="isAuthenticated$ | async;">
+          <ion-item routerLink="/accommodations/tabs/bookings/details" lines="none">
             <ion-icon name="calendar" slot="start"></ion-icon>
-            <ion-label>Bookings</ion-label>
+            <ion-label>Rezervacije</ion-label>
           </ion-item>
         </ion-menu-toggle>
+
         <ion-menu-toggle *ngIf="isAuthenticated$ | async; else showLogin">
-          <ion-item (click)="onLogout()">
+          <ion-item (click)="onLogout()" lines="none">
             <ion-icon name="log-out" slot="start"></ion-icon>
-            <ion-label>Logout</ion-label>
+            <ion-label>Odjava</ion-label>
           </ion-item>
         </ion-menu-toggle>
+
         <ng-template #showLogin>
           <ion-menu-toggle>
-            <ion-item routerLink="/auth/login">
+            <ion-item routerLink="/auth/login" lines="none">
               <ion-icon name="log-in" slot="start"></ion-icon>
-              <ion-label>Login</ion-label>
+              <ion-label>Prijava</ion-label>
             </ion-item>
           </ion-menu-toggle>
         </ng-template>

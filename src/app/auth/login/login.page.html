@@ -1,49 +1,42 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Login</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button text="Nazad" defaultHref="/"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-
+<ion-content [fullscreen]="true" class="ion-padding" style="--background: #f0f0f0;">
   <form #logInForm="ngForm" (ngSubmit)="onLogIn(logInForm)">
     <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size-sm="8" offset-sm="2">
+          <div class="login-container">
+            <img src="assets/login.jpg" alt="Login Illustration" class="login-illustration">
+            <ion-list>
+              <ion-item style="display: inline-flex; align-items: center;">
+                <ion-icon name="mail" slot="start"></ion-icon>
+                <ion-input type="email" name="email" ngModel required email placeholder="Email"
+                  style="flex: 1;"></ion-input>
+              </ion-item>
 
-      <ion-list>
-        <ion-row>
-          <ion-col size-sm="6" offset-sm="3">
-            <ion-item>
-              <ion-label position="floating">Email</ion-label>
-              <ion-input type="email" name="email" ngModel required email></ion-input>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size-sm="6" offset-sm="3">
-            <ion-item>
-              <ion-label position="floating">Lozinka</ion-label>
-              <ion-input type="password" name="password" ngModel required minlength="7"></ion-input>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-list>
-
-      <ion-row style="display: flex; justify-content: center;">
-        <ion-col size-sm="8" offset-sm="3" style="display: flex; justify-content: center; align-items: center;">
-          <ion-button type="submit" color="primary" shape="round" expand="block" *ngIf="!isLoading">
-            Prijavite se
-          </ion-button>
-          <ion-spinner *ngIf="isLoading" name="circles" color="primary"></ion-spinner>
-        </ion-col>
-      </ion-row>
-
-
-
-      <ion-row style="margin-top: 50px">
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-label>Niste još uvek napravili profil?</ion-label>
-          <ion-button type="button" color="primary" shape="round" expand="block" (click)="goToRegister()"> Kreiranje
-            naloga </ion-button>
+              <ion-item style="display: inline-flex; align-items: center;">
+                <ion-icon name="lock-closed" slot="start"></ion-icon>
+                <ion-input type="password" name="password" ngModel required minlength="7" placeholder="Lozinka"
+                  style="flex: 1;"></ion-input>
+              </ion-item>
+            </ion-list>
+            <div class="button-container">
+              <ion-button type="submit" color="primary" shape="round" expand="block" *ngIf="!isLoading">
+                Prijavite se
+              </ion-button>
+              <ion-spinner *ngIf="isLoading" name="circles" color="primary"></ion-spinner>
+            </div>
+            <ion-label class="register-link">Niste još uvek napravili profil?</ion-label>
+            <a href="auth/register" ion-button color="primary" shape="round" expand="block">
+              Registrujte se
+            </a>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>

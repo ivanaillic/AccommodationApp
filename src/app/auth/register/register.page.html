@@ -1,95 +1,100 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>register</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button text="Nazad" defaultHref="/auth/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Register</ion-title>
   </ion-toolbar>
 </ion-header>
 
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="register-container">
+    <img src="assets/register.jpg" alt="Register Illustration" class="register-illustration">
+    <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+      <ion-grid>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Ime</ion-label>
+              <ion-input type="text" formControlName="firstName"></ion-input>
+            </ion-item>
+            <ion-text *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
+              color="danger">
+              Unesite ime.
+            </ion-text>
+          </ion-col>
+        </ion-row>
 
-<ion-content [fullscreen]="true">
-  <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
-    <ion-grid>
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Ime</ion-label>
-            <ion-input type="text" formControlName="firstName"></ion-input>
-          </ion-item>
-          <ion-text *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
-            color="danger">
-            Unesite ime.
-          </ion-text>
-        </ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Prezime</ion-label>
+              <ion-input type="text" formControlName="lastName"></ion-input>
+            </ion-item>
+            <ion-text *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
+              color="danger">
+              Unesite prezime.
+            </ion-text>
+          </ion-col>
+        </ion-row>
 
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Prezime</ion-label>
-            <ion-input type="text" formControlName="lastName"></ion-input>
-          </ion-item>
-          <ion-text *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
-            color="danger">
-            Unesite prezime.
-          </ion-text>
-        </ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Godine</ion-label>
+              <ion-input type="number" formControlName="age"></ion-input>
+            </ion-item>
+            <ion-text *ngIf="registerForm.get('age')?.invalid && registerForm.get('age')?.touched" color="danger">
+              Godine moraju biti veće od 18.
+            </ion-text>
+          </ion-col>
+        </ion-row>
 
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Godine</ion-label>
-            <ion-input type="number" formControlName="age"></ion-input>
-          </ion-item>
-          <ion-text *ngIf="registerForm.get('age')?.invalid && registerForm.get('age')?.touched" color="danger">
-            Godine moraju biti veće od 18.
-          </ion-text>
-        </ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Korisničko ime</ion-label>
+              <ion-input type="text" formControlName="username"></ion-input>
+            </ion-item>
+            <ion-text *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+              color="danger">
+              Unesite korisničko ime.
+            </ion-text>
+          </ion-col>
+        </ion-row>
 
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Korisničko ime</ion-label>
-            <ion-input type="text" formControlName="username"></ion-input>
-          </ion-item>
-          <ion-text *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-            color="danger">
-            Unesite korisničko ime.
-          </ion-text>
-        </ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Email</ion-label>
+              <ion-input type="email" formControlName="email"></ion-input>
+            </ion-item>
+            <ion-text *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" color="danger">
+              Unesite email u validnom formatu.
+            </ion-text>
+          </ion-col>
+        </ion-row>
 
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input type="email" formControlName="email"></ion-input>
-          </ion-item>
-          <ion-text *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" color="danger">
-            Unesite email u validnom formatu.
-          </ion-text>
-        </ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating">Lozinka</ion-label>
+              <ion-input type="password" formControlName="password"></ion-input>
+            </ion-item>
+            <ion-text *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+              color="danger">
+              Unesite lozinku koja ima najmanje 7 karaktera.
+            </ion-text>
+          </ion-col>
+        </ion-row>
 
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Lozinka</ion-label>
-            <ion-input type="password" formControlName="password"></ion-input>
-          </ion-item>
-          <ion-text *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-            color="danger">
-            Unesite lozinku koja ima najmanje 7 karaktera.
-          </ion-text>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-button type="submit" color="primary" shape="round" expand="block"
-            [disabled]="!registerForm.valid">Registrujte se</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </form>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-button type="submit" color="primary" shape="round" expand="block"
+              [disabled]="!registerForm.valid">Registrujte se</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </div>
 </ion-content>

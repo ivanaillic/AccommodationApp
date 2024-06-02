@@ -8,49 +8,48 @@
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #e74848;
-  --ion-color-primary-tint: #e94444;
 
   --ion-color-secondary: #c9c9c9;
   --ion-color-secondary-rgb: 208, 208, 208;
   --ion-color-secondary-contrast: #000000;
   --ion-color-secondary-contrast-rgb: 0, 0, 0;
   --ion-color-secondary-shade: #c1c1c1;
-  --ion-color-secondary-tint: #d9d9d9;
+
 
   --ion-color-tertiary: #ececec;
   --ion-color-tertiary-rgb: 255, 255, 255;
   --ion-color-tertiary-contrast: #000000;
   --ion-color-tertiary-contrast-rgb: 0, 0, 0;
   --ion-color-tertiary-shade: #e0e0e0;
-  --ion-color-tertiary-tint: #ffffff;
+
 
   --ion-color-quaternary: #fcf8f8;
   --ion-color-quaternary-rgb: 247, 247, 247;
   --ion-color-quaternary-contrast: #000000;
   --ion-color-quaternary-contrast-rgb: 0, 0, 0;
   --ion-color-quaternary-shade: #e0e0e0;
-  --ion-color-quaternary-tint: #ffffff;
+
 
   --ion-color-valid: #86fab7;
   --ion-color-valid-rgb: 46, 204, 113;
   --ion-color-valid-contrast: #ffffff;
   --ion-color-valid-contrast-rgb: 255, 255, 255;
   --ion-color-valid-shade: #27ae60;
-  --ion-color-valid-tint: #2ecc71;
+
 
   --ion-color-warning: #fcc771;
   --ion-color-warning-rgb: 243, 156, 18;
   --ion-color-warning-contrast: #ffffff;
   --ion-color-warning-contrast-rgb: 255, 255, 255;
   --ion-color-warning-shade: #d35400;
-  --ion-color-warning-tint: #f39c12;
+
 
   --ion-color-danger: #e74c3c;
   --ion-color-danger-rgb: 231, 76, 60;
   --ion-color-danger-contrast: #ffffff;
   --ion-color-danger-contrast-rgb: 255, 255, 255;
   --ion-color-danger-shade: #c0392b;
-  --ion-color-danger-tint: #e74c3c;
+
 
 
 
@@ -64,10 +63,7 @@
   --sidemenu-text-color: var(--ion-color-primary);
 }
 
-ion-button {
-  --background: var(--button-background-color);
-  --color: var(--button-text-color);
-}
+
 
 ion-tab-bar {
   --background: var(--tab-background-color);
@@ -83,6 +79,31 @@ ion-toolbar {
   --background: var(--toolbar-background-color);
   --color: var(--toolbar-color);
 }
+
+.custom-button {
+  --background: var(--ion-color-primary);
+  --background-activated: var(--ion-color-primary-shade);
+  --background-focused: var(--ion-color-primary-tint);
+  --border-radius: 15px;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 7px;
+  --padding-bottom: 7px;
+  --font-weight: bold;
+  --color: var(--ion-color-primary-contrast);
+  text-transform: uppercase;
+  transition: background 0.3s ease-in-out;
+}
+
+.custom-button:hover {
+  --background: var(--ion-color-primary-tint);
+}
+
+.custom-button:active {
+  --background: var(--ion-color-primary-shade);
+}
+
 
 
 @media (prefers-color-scheme: dark) {
