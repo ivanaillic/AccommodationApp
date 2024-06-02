@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { BookingService } from './booking.service';
+import { Booking } from '../booking.model';
 
 @Component({
   selector: 'app-booking',
@@ -17,14 +18,17 @@ export class BookingPage implements OnInit, OnDestroy {
   userId: string = '';
   specialRequests: string[] = [];
   private userIdSubscription!: Subscription;
+  private bookingsSubscription!: Subscription;
   dateError: string = '';
+  bookings: Booking[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private navCtrl: NavController,
     private alertController: AlertController,
     private bookingService: BookingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -36,6 +40,7 @@ export class BookingPage implements OnInit, OnDestroy {
     this.userIdSubscription = this.authService.getUserId().subscribe(userId => {
       if (userId) {
         this.userId = userId;
+        this.fetchBookings();
       }
     });
   }
@@ -44,6 +49,15 @@ export class BookingPage implements OnInit, OnDestroy {
     if (this.userIdSubscription) {
       this.userIdSubscription.unsubscribe();
     }
+    if (this.bookingsSubscription) {
+      this.bookingsSubscription.unsubscribe();
+    }
+  }
+
+  fetchBookings() {
+    this.bookingsSubscription = this.bookingService.getBookingsByUserId(this.userId).subscribe(bookings => {
+      this.bookings = bookings;
+    });
   }
 
   addSpecialRequest() {
@@ -84,4 +98,6 @@ export class BookingPage implements OnInit, OnDestroy {
       await alert.present();
     }
   }
+
+
 }

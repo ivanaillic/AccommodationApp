@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, from, throwError } from 'rxjs';
-import { tap, switchMap, take, map, concatMap, mergeMap, catchError } from 'rxjs/operators';
+import { tap, switchMap, take, map, concatMap, mergeMap, catchError, toArray } from 'rxjs/operators';
 import { Booking } from '../booking.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { SpecialRequestService } from './special-request.service';
@@ -127,6 +127,35 @@ export class BookingService {
         }
         return bookings;
       })
+    );
+  }
+
+  cancelBooking(bookingId: string): Observable<void> {
+    return this.specialRequestService.getSpecialRequestsByBookingId(bookingId).pipe(
+      switchMap(specialRequests => {
+        if (specialRequests.length === 0) {
+          return this.deleteBooking(bookingId);
+        }
+        return from(specialRequests).pipe(
+          mergeMap(request => this.specialRequestService.deleteSpecialRequest(request.id)),
+          take(specialRequests.length),
+          toArray(),
+          switchMap(() => this.deleteBooking(bookingId))
+        );
+      })
+    );
+  }
+
+  private deleteBooking(bookingId: string): Observable<void> {
+    return this.http.delete<void>(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json`
+    ).pipe(
+      switchMap(() => this.bookings.pipe(
+        take(1),
+        map(bookings => bookings.filter(booking => booking.id !== bookingId)),
+        tap(updatedBookings => this._bookings.next(updatedBookings)),
+        map(() => undefined)
+      ))
     );
   }
 }

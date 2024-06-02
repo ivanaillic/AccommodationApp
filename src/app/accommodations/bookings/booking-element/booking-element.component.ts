@@ -3,6 +3,8 @@ import { Booking } from '../booking.model';
 import { ListingsService } from '../../listings/listings.service';
 import { SpecialRequest } from '../booking/special-request.model';
 import { BookingsService } from '../bookings.service';
+import { BookingService } from '../booking/booking.service';
+import { AlertController, LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -21,10 +23,14 @@ export class BookingElementComponent implements OnInit {
   };
   listingTitle: string = '';
   specialRequests: SpecialRequest[] = [];
+  isCancelled: boolean = false;
 
   constructor(
     private listingService: ListingsService,
-    private bookingsService: BookingsService
+    private bookingsService: BookingsService,
+    private alertController: AlertController,
+    private loadingController: LoadingController,
+    private bookingService: BookingService
 
   ) { }
 
@@ -51,5 +57,57 @@ export class BookingElementComponent implements OnInit {
       }
     );
   }
+
+  async cancelBooking(bookingId: string) {
+    const alert = await this.alertController.create({
+      header: 'Potvrda otkazivanja',
+      message: 'Da li ste sigurni da želite da otkažete ovu rezervaciju?',
+      buttons: [
+        {
+          text: 'Ne',
+          role: 'cancel'
+        },
+        {
+          text: 'Da',
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              message: 'Otkazivanje...'
+            });
+            await loading.present();
+
+            this.bookingService.cancelBooking(bookingId).subscribe(
+              async () => {
+                await loading.dismiss();
+
+                const successAlert = await this.alertController.create({
+                  header: 'Uspeh',
+                  message: 'Rezervacija je uspešno otkazana.',
+                  buttons: ['OK']
+                });
+                await successAlert.present();
+
+                this.isCancelled = true;
+              },
+              async (error) => {
+                await loading.dismiss();
+                console.error('Greška prilikom otkazivanja rezervacije:', error);
+
+                const errorAlert = await this.alertController.create({
+                  header: 'Greška',
+                  message: 'Došlo je do greške prilikom otkazivanja rezervacije. Molimo pokušajte ponovo.',
+                  buttons: ['OK']
+                });
+                await errorAlert.present();
+              }
+            );
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
 }
 

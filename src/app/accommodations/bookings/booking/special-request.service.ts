@@ -37,4 +37,11 @@ export class SpecialRequestService {
             })
         );
     }
+
+    deleteSpecialRequest(requestId: string): Observable<void> {
+        return this.http.delete<void>(
+            `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/special_requests/${requestId}.json`
+        );
+    }
+
 }
