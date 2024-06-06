@@ -4,7 +4,7 @@
       <ion-menu-button style="color: white;"></ion-menu-button>
     </ion-buttons>
 
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="authService.isUserAuthenticated | async">
       <ion-button (click)="openListingsModal()">
         <i class="fas fa-plus-circle" style="color: white; font-size: 24px;"></i>
       </ion-button>
@@ -19,10 +19,4 @@
   <ion-list>
     <app-listing-element *ngFor="let listing of filteredListings" [listing]="listing"></app-listing-element>
   </ion-list>
-
-  <ion-footer>
-    <ion-toolbar>
-      <ion-title size="large"></ion-title>
-    </ion-toolbar>
-  </ion-footer>
 </ion-content>

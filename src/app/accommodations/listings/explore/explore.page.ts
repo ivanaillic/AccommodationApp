@@ -3,6 +3,7 @@ import { Listing } from '../listing.model';
 import { ListingsService } from '../listings.service';
 import { ModalController } from '@ionic/angular';
 import { ListingsModalComponent } from '../listings-modal/listings-modal.component';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-explore',
@@ -14,14 +15,20 @@ export class ExplorePage implements OnInit {
   listings: Listing[] = [];
   filteredListings: Listing[] = [];
 
-  constructor(private listingsService: ListingsService, private modalController: ModalController) { }
+
+  constructor(private listingsService: ListingsService, private modalController: ModalController, public authService: AuthService) { }
+
+
 
   ngOnInit() {
     this.listingsService.getListings().subscribe((listings) => {
       this.listings = listings;
       this.filteredListings = listings;
     });
+
+    console.log("Is user authenticated:", this.authService.isUserAuthenticated);
   }
+
 
   ionViewWillEnter() {
     this.listingsService.fetchListings().subscribe(

@@ -3,6 +3,7 @@ import { Booking } from '../../booking.model';
 import { ActivatedRoute } from '@angular/router';
 import { BookingsService } from '../../bookings.service';
 import { SpecialRequest } from '../../booking/special-request.model';
+import { NavController } from '@ionic/angular';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class BookingDetailsPage implements OnInit {
   booking!: Booking;
   specialRequests: SpecialRequest[] = [];
 
-  constructor(private route: ActivatedRoute, private bookingsService: BookingsService) { }
+  constructor(private route: ActivatedRoute, private bookingsService: BookingsService, private navCtrl: NavController) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
@@ -49,4 +50,7 @@ export class BookingDetailsPage implements OnInit {
     );
   }
 
+  goBack() {
+    this.navCtrl.back();
+  }
 }

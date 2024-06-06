@@ -31,6 +31,7 @@ export class AuthService {
   private _isUserAuthenticated = new BehaviorSubject<boolean>(false);
   private _user = new BehaviorSubject<User | null>(null);
 
+
   constructor(private http: HttpClient) { }
 
   get isUserAuthenticated(): Observable<boolean> {
@@ -93,5 +94,7 @@ export class AuthService {
       map(user => user ? user.id : null)
     );
   }
+
+
 
 }

@@ -1,8 +1,10 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Dodaj oglas</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">Zatvori</ion-button>
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close" style="color: white;"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

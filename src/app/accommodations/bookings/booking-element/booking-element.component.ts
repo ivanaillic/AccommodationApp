@@ -6,7 +6,6 @@ import { BookingsService } from '../bookings.service';
 import { BookingService } from '../booking/booking.service';
 import { AlertController, LoadingController } from '@ionic/angular';
 
-
 @Component({
   selector: 'app-booking-element',
   templateUrl: './booking-element.component.html',
@@ -38,7 +37,6 @@ export class BookingElementComponent implements OnInit {
     this.getListingTitle(this.booking.listing_id);
     this.fetchSpecialRequests(this.booking.id);
   }
-
 
   getListingTitle(listingId: string): void {
     this.listingService.getListingTitle(listingId).subscribe(title => {

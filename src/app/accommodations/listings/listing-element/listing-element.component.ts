@@ -42,4 +42,6 @@ export class ListingElementComponent implements OnInit, OnDestroy {
     }
   }
 
+
+
 }
