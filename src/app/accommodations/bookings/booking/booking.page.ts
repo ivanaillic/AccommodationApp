@@ -68,15 +68,35 @@ export class BookingPage implements OnInit, OnDestroy {
     this.specialRequests[index] = event.detail.value;
   }
 
+
   async confirmBooking() {
     const specialRequests = this.specialRequests.map(request => request.trim()).filter(request => request.length > 0);
 
     try {
       if (this.startDate >= this.endDate) {
-        this.dateError = 'Pocetni datum mora biti pre krajnjeg datuma';
+        this.dateError = 'Početni datum mora biti pre krajnjeg datuma';
         return;
       } else {
         this.dateError = '';
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Provera dostupnosti datuma...'
+      });
+      await loading.present();
+
+      const areDatesAvailable = await this.bookingService.areDatesAvailable(this.listingId, this.startDate, this.endDate).toPromise();
+      await loading.dismiss();
+
+      if (!areDatesAvailable) {
+        const alert = await this.alertController.create({
+          header: 'Greška',
+          message: 'Datumi su već zauzeti. Molimo odaberite druge datume.',
+          buttons: ['OK']
+        });
+
+        await alert.present();
+        return;
       }
 
       await this.bookingService.addBooking(this.listingId, this.startDate, this.endDate, specialRequests).toPromise();
@@ -98,6 +118,5 @@ export class BookingPage implements OnInit, OnDestroy {
       await alert.present();
     }
   }
-
 
 }

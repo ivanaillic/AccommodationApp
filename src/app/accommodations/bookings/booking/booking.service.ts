@@ -158,4 +158,31 @@ export class BookingService {
       ))
     );
   }
+
+
+
+  areDatesAvailable(listingId: string, startDate: string, endDate: string): Observable<boolean> {
+    return this.http.get<{ [key: string]: BookingData }>(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json`
+    ).pipe(
+      map(bookingData => {
+        for (const key in bookingData) {
+          if (bookingData.hasOwnProperty(key) && bookingData[key].listing_id === listingId) {
+            const bookedStartDate = new Date(bookingData[key].start_date);
+            const bookedEndDate = new Date(bookingData[key].end_date);
+            const newStartDate = new Date(startDate);
+            const newEndDate = new Date(endDate);
+            if (
+              (newStartDate >= bookedStartDate && newStartDate < bookedEndDate) ||
+              (newEndDate > bookedStartDate && newEndDate <= bookedEndDate) ||
+              (newStartDate <= bookedStartDate && newEndDate >= bookedEndDate)
+            ) {
+              return false;
+            }
+          }
+        }
+        return true;
+      })
+    );
+  }
 }
