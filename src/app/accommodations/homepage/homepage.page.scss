@@ -8,9 +8,17 @@
 
 .homepage-card {
     padding: 20px;
-    background-color: #d1d4ff;
+    background: linear-gradient(145deg, #d1d4ff, #bec1ff);
     border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+        inset 0 4px 8px rgba(255, 255, 255, 0.3),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #bcc2ff;
+    transition: transform 0.2s;
+}
+
+.homepage-card:hover {
+    transform: scale(1.02);
 }
 
 .homepage-heading {

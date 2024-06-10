@@ -12,11 +12,11 @@
     <ion-card-content>
       <ion-item>
         <ion-label>Početni datum</ion-label>
-        <ion-datetime display-format="MM DD YYYY" [(ngModel)]="startDate"></ion-datetime>
+        <ion-datetime presentation="date" display-format="MM DD YYYY" [(ngModel)]="startDate"></ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label>Krajnji datum</ion-label>
-        <ion-datetime display-format="MM DD YYYY" [(ngModel)]="endDate"></ion-datetime>
+        <ion-datetime presentation="date" display-format="MM DD YYYY" [(ngModel)]="endDate"></ion-datetime>
       </ion-item>
       <ion-list>
         <ion-item *ngFor="let request of specialRequests; let i = index">

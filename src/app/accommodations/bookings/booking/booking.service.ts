@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, from, throwError } from 'rxjs';
-import { tap, switchMap, take, map, concatMap, mergeMap, catchError, toArray } from 'rxjs/operators';
+import { tap, switchMap, take, map, mergeMap, catchError, toArray } from 'rxjs/operators';
 import { Booking } from '../booking.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { SpecialRequestService } from './special-request.service';

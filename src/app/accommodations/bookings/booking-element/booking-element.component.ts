@@ -1,59 +1,48 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Booking } from '../booking.model';
 import { ListingsService } from '../../listings/listings.service';
-import { SpecialRequest } from '../booking/special-request.model';
-import { BookingsService } from '../bookings.service';
 import { BookingService } from '../booking/booking.service';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-booking-element',
   templateUrl: './booking-element.component.html',
   styleUrls: ['./booking-element.component.scss'],
 })
-export class BookingElementComponent implements OnInit {
-  @Input() booking: Booking = {
-    id: '1',
-    user_id: '101',
-    listing_id: '201',
-    start_date: new Date('2024-04-10'),
-    end_date: new Date('2024-04-15'),
-    status: 'confirmed'
-  };
-  listingTitle: string = '';
-  specialRequests: SpecialRequest[] = [];
+export class BookingElementComponent implements OnInit, OnDestroy {
+  private bookingsSubscription: Subscription | undefined;
+  bookings: Booking[] = [];
+  userId: string = '';
   isCancelled: boolean = false;
+
+  @Input() booking!: Booking;
+  @Output() bookingCanceled = new EventEmitter<void>();
+  listingTitle: string = '';
 
   constructor(
     private listingService: ListingsService,
-    private bookingsService: BookingsService,
+    private bookingService: BookingService,
     private alertController: AlertController,
     private loadingController: LoadingController,
-    private bookingService: BookingService
-
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
     this.getListingTitle(this.booking.listing_id);
-    this.fetchSpecialRequests(this.booking.id);
+    this.fetchBookings();
+  }
+
+  ngOnDestroy() {
+    if (this.bookingsSubscription) {
+      this.bookingsSubscription.unsubscribe();
+    }
   }
 
   getListingTitle(listingId: string): void {
     this.listingService.getListingTitle(listingId).subscribe(title => {
       this.listingTitle = title;
     });
-  }
-
-
-  fetchSpecialRequests(bookingId: string) {
-    this.bookingsService.getSpecialRequestsByBookingId(bookingId).subscribe(
-      (specialRequests: SpecialRequest[]) => {
-        this.specialRequests = specialRequests;
-      },
-      (error) => {
-        console.error('Greška prilikom dohvatanja specijalnih zahteva:', error);
-      }
-    );
   }
 
   async cancelBooking(bookingId: string) {
@@ -85,6 +74,7 @@ export class BookingElementComponent implements OnInit {
                 await successAlert.present();
 
                 this.isCancelled = true;
+                this.navCtrl.navigateRoot(['/accommodations/tabs/bookings/details']);
               },
               async (error) => {
                 await loading.dismiss();
@@ -107,5 +97,9 @@ export class BookingElementComponent implements OnInit {
   }
 
 
+  fetchBookings() {
+    this.bookingsSubscription = this.bookingService.getBookingsByUserId(this.userId).subscribe(bookings => {
+      this.bookings = bookings;
+    });
+  }
 }
-
