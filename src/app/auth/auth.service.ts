@@ -87,11 +87,12 @@ export class AuthService {
   }
 
   getUserId(): Observable<string | null> {
-    return this.user.pipe(
-      tap(userId => {
-        console.log('Dobijen korisnički ID:', userId);
-      }),
-      map(user => user ? user.id : null)
+    return this._user.pipe(
+      map(user => {
+        const userId = user ? user.id : null;
+        console.log(`getUserId: ${userId}`);
+        return userId;
+      })
     );
   }
 

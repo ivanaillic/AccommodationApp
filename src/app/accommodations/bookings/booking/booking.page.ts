@@ -86,6 +86,7 @@ export class BookingPage implements OnInit, OnDestroy {
     await loading.present();
 
     try {
+
       const areDatesAvailable = await this.bookingService.areDatesAvailable(this.listingId, this.startDate, this.endDate).toPromise();
       await loading.dismiss();
 
@@ -102,6 +103,8 @@ export class BookingPage implements OnInit, OnDestroy {
       await this.showAlert('Greška', 'Došlo je do greške prilikom rezervacije. Molimo pokušajte ponovo.');
     }
   }
+
+
 
   async deleteBooking(bookingId: string) {
     const alert = await this.alertController.create({

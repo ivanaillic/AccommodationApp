@@ -163,11 +163,11 @@ export class BookingService {
 
   areDatesAvailable(listingId: string, startDate: string, endDate: string): Observable<boolean> {
     return this.http.get<{ [key: string]: BookingData }>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json`
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="listing_id"&equalTo="${listingId}"`
     ).pipe(
       map(bookingData => {
         for (const key in bookingData) {
-          if (bookingData.hasOwnProperty(key) && bookingData[key].listing_id === listingId) {
+          if (bookingData.hasOwnProperty(key)) {
             const bookedStartDate = new Date(bookingData[key].start_date);
             const bookedEndDate = new Date(bookingData[key].end_date);
             const newStartDate = new Date(startDate);
@@ -185,4 +185,26 @@ export class BookingService {
       })
     );
   }
+
+  isListingOwner(listingId: string, userId: string): Observable<boolean> {
+    return this.http.get<{ user_id: string }>(`https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${listingId}.json`).pipe(
+      map(listingData => {
+        if (!listingData) {
+          console.error(`No data found for listing ID: ${listingId}`);
+          return false;
+        }
+
+        const listingOwnerId = listingData.user_id;
+        if (!listingOwnerId) {
+          console.error(`User ID not found for listing ID: ${listingId}`);
+          return false;
+        }
+
+        const isOwner = listingOwnerId === userId;
+        console.log(`Listing ID: ${listingId}, Listing Owner ID: ${listingOwnerId}, User ID: ${userId}, Is Owner: ${isOwner}`);
+        return isOwner;
+      })
+    );
+  }
 }
+
