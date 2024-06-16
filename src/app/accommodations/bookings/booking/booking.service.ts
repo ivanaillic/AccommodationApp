@@ -35,22 +35,22 @@ export class BookingService {
     let generatedId: string;
     let newBooking: Booking;
 
-    return this.authService.getUserId().pipe(
+    return this.authService.user.pipe(
       take(1),
-      switchMap(userId => {
-        if (!userId) {
-          throw new Error('Nema korisničkog ID-a');
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
         }
         newBooking = {
           id: null!,
-          user_id: userId,
+          user_id: user.id,
           listing_id: listingId,
           start_date: new Date(startDate),
           end_date: new Date(endDate),
           status: 'confirmed'
         };
         return this.http.post<{ name: string }>(
-          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json`,
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${user.token!}`,
           { ...newBooking, id: null }
         );
       }),
@@ -61,7 +61,7 @@ export class BookingService {
           mergeMap(request => this.specialRequestService.addSpecialRequest(generatedId, request))
         );
         return addSpecialRequests$.pipe(
-          take(specialRequests.length),
+          toArray(),
           map(() => newBooking)
         );
       }),
@@ -76,12 +76,49 @@ export class BookingService {
   }
 
   fetchBookings(): Observable<Booking[]> {
-    return this.authService.getUserId().pipe(
-      switchMap(userId => {
-        if (!userId) {
-          return throwError('Nema korisničkog ID-a');
+    return this.authService.user.pipe(
+      switchMap(user => {
+        if (!user || !user.token) {
+          return throwError('No user found or user is not authenticated!');
         }
-        return this.http.get<{ [key: string]: BookingData }>('https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json').pipe(
+        return this.http.get<{ [key: string]: BookingData }>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${user.token!}`
+        ).pipe(
+          map(bookingData => {
+            const bookings: Booking[] = [];
+            for (const key in bookingData) {
+              if (bookingData.hasOwnProperty(key) && bookingData[key].user_id === user.id) {
+                bookings.push({
+                  id: key,
+                  user_id: bookingData[key].user_id,
+                  listing_id: bookingData[key].listing_id,
+                  start_date: new Date(bookingData[key].start_date),
+                  end_date: new Date(bookingData[key].end_date),
+                  status: bookingData[key].status
+                });
+              }
+            }
+            return bookings;
+          }),
+          catchError(error => {
+            console.error('Error fetching bookings:', error);
+            return throwError(error);
+          })
+        );
+      })
+    );
+  }
+
+  getBookingsByUserId(userId: string): Observable<Booking[]> {
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
+        }
+        return this.http.get<{ [key: string]: BookingData }>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${user.token!}`
+        ).pipe(
           map(bookingData => {
             const bookings: Booking[] = [];
             for (const key in bookingData) {
@@ -97,58 +134,43 @@ export class BookingService {
               }
             }
             return bookings;
-          }),
-          catchError(error => {
-            console.error('Greška prilikom dohvatanja rezervacija:', error);
-            return throwError(error);
           })
         );
       })
     );
   }
 
-  getBookingsByUserId(userId: string): Observable<Booking[]> {
-    return this.http.get<{ [key: string]: BookingData }>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json`
-    ).pipe(
-      map(bookingData => {
-        const bookings: Booking[] = [];
-        for (const key in bookingData) {
-          if (bookingData.hasOwnProperty(key) && bookingData[key].user_id === userId) {
-            bookings.push({
-              id: key,
-              user_id: bookingData[key].user_id,
-              listing_id: bookingData[key].listing_id,
-              start_date: new Date(bookingData[key].start_date),
-              end_date: new Date(bookingData[key].end_date),
-              status: bookingData[key].status
-            });
-          }
-        }
-        return bookings;
-      })
-    );
-  }
-
   cancelBooking(bookingId: string): Observable<void> {
-    return this.specialRequestService.getSpecialRequestsByBookingId(bookingId).pipe(
-      switchMap(specialRequests => {
-        if (specialRequests.length === 0) {
-          return this.deleteBooking(bookingId);
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
         }
-        return from(specialRequests).pipe(
-          mergeMap(request => this.specialRequestService.deleteSpecialRequest(request.id)),
-          take(specialRequests.length),
-          toArray(),
-          switchMap(() => this.deleteBooking(bookingId))
+        console.log(`User token: ${user.token}`);
+        return this.specialRequestService.getSpecialRequestsByBookingId(bookingId).pipe(
+          switchMap(specialRequests => {
+            if (specialRequests.length === 0) {
+              return this.deleteBooking(bookingId, user.token!);
+            }
+            return from(specialRequests).pipe(
+              mergeMap(request => this.specialRequestService.deleteSpecialRequest(request.id)),
+              toArray(),
+              switchMap(() => this.deleteBooking(bookingId, user.token!))
+            );
+          })
         );
+      }),
+      catchError(error => {
+        console.error('Error while cancelling booking:', error);
+        return throwError(error);
       })
     );
   }
 
-  private deleteBooking(bookingId: string): Observable<void> {
+  private deleteBooking(bookingId: string, token: string): Observable<void> {
     return this.http.delete<void>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json`
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json?auth=${token}`
     ).pipe(
       switchMap(() => this.bookings.pipe(
         take(1),
@@ -159,52 +181,67 @@ export class BookingService {
     );
   }
 
-
-
   areDatesAvailable(listingId: string, startDate: string, endDate: string): Observable<boolean> {
-    return this.http.get<{ [key: string]: BookingData }>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="listing_id"&equalTo="${listingId}"`
-    ).pipe(
-      map(bookingData => {
-        for (const key in bookingData) {
-          if (bookingData.hasOwnProperty(key)) {
-            const bookedStartDate = new Date(bookingData[key].start_date);
-            const bookedEndDate = new Date(bookingData[key].end_date);
-            const newStartDate = new Date(startDate);
-            const newEndDate = new Date(endDate);
-            if (
-              (newStartDate >= bookedStartDate && newStartDate < bookedEndDate) ||
-              (newEndDate > bookedStartDate && newEndDate <= bookedEndDate) ||
-              (newStartDate <= bookedStartDate && newEndDate >= bookedEndDate)
-            ) {
-              return false;
-            }
-          }
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
         }
-        return true;
+        return this.http.get<{ [key: string]: BookingData }>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?orderBy="listing_id"&equalTo="${listingId}"&auth=${user.token!}`
+        ).pipe(
+          map(bookingData => {
+            for (const key in bookingData) {
+              if (bookingData.hasOwnProperty(key)) {
+                const bookedStartDate = new Date(bookingData[key].start_date);
+                const bookedEndDate = new Date(bookingData[key].end_date);
+                const newStartDate = new Date(startDate);
+                const newEndDate = new Date(endDate);
+                if (
+                  (newStartDate >= bookedStartDate && newStartDate < bookedEndDate) ||
+                  (newEndDate > bookedStartDate && newEndDate <= bookedEndDate) ||
+                  (newStartDate <= bookedStartDate && newEndDate >= bookedEndDate)
+                ) {
+                  return false;
+                }
+              }
+            }
+            return true;
+          })
+        );
       })
     );
   }
 
   isListingOwner(listingId: string, userId: string): Observable<boolean> {
-    return this.http.get<{ user_id: string }>(`https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${listingId}.json`).pipe(
-      map(listingData => {
-        if (!listingData) {
-          console.error(`No data found for listing ID: ${listingId}`);
-          return false;
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
         }
+        return this.http.get<{ user_id: string }>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${listingId}.json?auth=${user.token!}`
+        ).pipe(
+          map(listingData => {
+            if (!listingData) {
+              console.error(`No data found for listing ID: ${listingId}`);
+              return false;
+            }
 
-        const listingOwnerId = listingData.user_id;
-        if (!listingOwnerId) {
-          console.error(`User ID not found for listing ID: ${listingId}`);
-          return false;
-        }
+            const listingOwnerId = listingData.user_id;
+            if (!listingOwnerId) {
+              console.error(`User ID not found for listing ID: ${listingId}`);
+              return false;
+            }
 
-        const isOwner = listingOwnerId === userId;
-        console.log(`Listing ID: ${listingId}, Listing Owner ID: ${listingOwnerId}, User ID: ${userId}, Is Owner: ${isOwner}`);
-        return isOwner;
+            const isOwner = listingOwnerId === userId;
+            console.log(`Listing ID: ${listingId}, Listing Owner ID: ${listingOwnerId}, User ID: ${userId}, Is Owner: ${isOwner}`);
+            return isOwner;
+          })
+        );
       })
     );
   }
 }
-

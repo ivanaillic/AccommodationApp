@@ -30,25 +30,15 @@ export class ListingsService {
 
   addListing(title: string, description: string, price_per_day: number, location: string, capacity_persons: number, imageUrl: string, userId: string) {
     let generatedId: string;
-    return this.http.post<{ name: string }>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json`,
-      {
-        title,
-        description,
-        price_per_day,
-        location,
-        capacity_persons,
-        image_url: imageUrl,
-        user_id: userId
-      }).pipe(
-        switchMap((resData) => {
-          generatedId = resData.name;
-          return this.getListings();
-        }),
-        take(1),
-        tap((listings) => {
-          const updatedListings = [...listings, {
-            id: generatedId,
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user) {
+          throw new Error('No user found!');
+        }
+        return this.http.post<{ name: string }>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json?auth=${user.token}`,
+          {
             title,
             description,
             price_per_day,
@@ -56,10 +46,28 @@ export class ListingsService {
             capacity_persons,
             image_url: imageUrl,
             user_id: userId
-          }];
-          this._listings.next(updatedListings);
-        })
-      );
+          }
+        );
+      }),
+      switchMap((resData) => {
+        generatedId = resData.name;
+        return this.getListings();
+      }),
+      take(1),
+      tap((listings) => {
+        const updatedListings = [...listings, {
+          id: generatedId,
+          title,
+          description,
+          price_per_day,
+          location,
+          capacity_persons,
+          image_url: imageUrl,
+          user_id: userId
+        }];
+        this._listings.next(updatedListings);
+      })
+    );
   }
 
   fetchListings() {
@@ -83,14 +91,25 @@ export class ListingsService {
           }
         }
         this._listings.next(listings);
+      }),
+      catchError(error => {
+        console.error('Error fetching listings:', error);
+        return of([]);
       })
     );
   }
 
   getListing(id: string) {
-    return this.http.get<ListingData>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json`
-    ).pipe(
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user) {
+          throw new Error('No user found!');
+        }
+        return this.http.get<ListingData>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json?auth=${user.token}`
+        );
+      }),
       map((listingData) => {
         return {
           id,
@@ -106,11 +125,17 @@ export class ListingsService {
     );
   }
 
-
   deleteListing(id: string) {
-    return this.http.delete(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json`
-    ).pipe(
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user) {
+          throw new Error('No user found!');
+        }
+        return this.http.delete(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json?auth=${user.token}`
+        );
+      }),
       switchMap(() => {
         return this.getListings();
       }),
@@ -122,10 +147,17 @@ export class ListingsService {
   }
 
   updateListing(id: string, updatedListingData: Partial<ListingData>) {
-    return this.http.patch(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json`,
-      updatedListingData
-    ).pipe(
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user) {
+          throw new Error('No user found!');
+        }
+        return this.http.patch(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json?auth=${user.token}`,
+          updatedListingData
+        );
+      }),
       switchMap(() => {
         return this.getListings();
       }),
@@ -143,14 +175,19 @@ export class ListingsService {
   }
 
   getListingTitle(listingId: string): Observable<string> {
-    return this.http.get<ListingData>(
-      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${listingId}.json`
-    ).pipe(
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user) {
+          throw new Error('No user found!');
+        }
+        return this.http.get<ListingData>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${listingId}.json?auth=${user.token}`
+        );
+      }),
       map((listingData) => {
         return listingData.title;
       })
     );
   }
-
-
 }

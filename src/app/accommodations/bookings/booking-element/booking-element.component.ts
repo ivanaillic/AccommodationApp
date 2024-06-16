@@ -96,7 +96,6 @@ export class BookingElementComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-
   fetchBookings() {
     this.bookingsSubscription = this.bookingService.getBookingsByUserId(this.userId).subscribe(bookings => {
       this.bookings = bookings;

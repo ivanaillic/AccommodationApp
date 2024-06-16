@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { tap, map } from "rxjs/operators";
+import { tap, map } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from "../../environments/environment";
 import { User } from './user.model';
@@ -31,7 +31,6 @@ export class AuthService {
   private _isUserAuthenticated = new BehaviorSubject<boolean>(false);
   private _user = new BehaviorSubject<User | null>(null);
 
-
   constructor(private http: HttpClient) { }
 
   get isUserAuthenticated(): Observable<boolean> {
@@ -57,7 +56,7 @@ export class AuthService {
           userData.idToken,
           expirationTime
         );
-        console.log('Dobijen je korisnički ID:', userData.localId);
+        localStorage.setItem('userData', JSON.stringify(newUser));
         this._user.next(newUser);
         this._isUserAuthenticated.next(true);
       })
@@ -75,15 +74,35 @@ export class AuthService {
     );
   }
 
+  autoLogin() {
+    const userData: {
+      id: string;
+      email: string;
+      _token: string;
+      _tokenExpirationDate: string;
+    } = JSON.parse(localStorage.getItem('userData')!);
+
+    if (!userData) {
+      return;
+    }
+
+    const loadedUser = new User(
+      userData.id,
+      userData.email,
+      userData._token,
+      new Date(userData._tokenExpirationDate)
+    );
+
+    if (loadedUser.token) {
+      this._user.next(loadedUser);
+      this._isUserAuthenticated.next(true);
+    }
+  }
+
   logOut() {
     this._isUserAuthenticated.next(false);
     this._user.next(null);
-  }
-
-  getToken(): Observable<string | null> {
-    return this.user.pipe(
-      map(user => user ? user.token : null)
-    );
+    localStorage.removeItem('userData');
   }
 
   getUserId(): Observable<string | null> {
@@ -95,7 +114,4 @@ export class AuthService {
       })
     );
   }
-
-
-
 }
