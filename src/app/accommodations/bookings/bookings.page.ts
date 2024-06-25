@@ -20,7 +20,6 @@ export class BookingsPage implements OnInit {
     this.authService.getUserId().subscribe(userId => {
       if (userId) {
         this.bookingService.getBookingsByUserId(userId).subscribe(bookings => {
-          console.log('Dobijene rezervacije:', bookings);
           this.bookings = bookings;
         });
       }

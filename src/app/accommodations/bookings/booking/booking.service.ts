@@ -85,20 +85,20 @@ export class BookingService {
           `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${user.token!}`
         ).pipe(
           map(bookingData => {
-            const bookings: Booking[] = [];
-            for (const key in bookingData) {
-              if (bookingData.hasOwnProperty(key) && bookingData[key].user_id === user.id) {
-                bookings.push({
+            return Object.keys(bookingData).map(key => {
+              const data = bookingData[key];
+              if (data.user_id === user.id) {
+                return {
                   id: key,
-                  user_id: bookingData[key].user_id,
-                  listing_id: bookingData[key].listing_id,
-                  start_date: new Date(bookingData[key].start_date),
-                  end_date: new Date(bookingData[key].end_date),
-                  status: bookingData[key].status
-                });
+                  user_id: data.user_id,
+                  listing_id: data.listing_id,
+                  start_date: new Date(data.start_date),
+                  end_date: new Date(data.end_date),
+                  status: data.status
+                };
               }
-            }
-            return bookings;
+              return null;
+            }).filter(booking => booking !== null) as Booking[];
           }),
           catchError(error => {
             console.error('Error fetching bookings:', error);
@@ -108,6 +108,7 @@ export class BookingService {
       })
     );
   }
+
 
   getBookingsByUserId(userId: string): Observable<Booking[]> {
     return this.authService.user.pipe(
@@ -120,25 +121,26 @@ export class BookingService {
           `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${user.token!}`
         ).pipe(
           map(bookingData => {
-            const bookings: Booking[] = [];
-            for (const key in bookingData) {
-              if (bookingData.hasOwnProperty(key) && bookingData[key].user_id === userId) {
-                bookings.push({
+            return Object.keys(bookingData).map(key => {
+              const data = bookingData[key];
+              if (data.user_id === userId) {
+                return {
                   id: key,
-                  user_id: bookingData[key].user_id,
-                  listing_id: bookingData[key].listing_id,
-                  start_date: new Date(bookingData[key].start_date),
-                  end_date: new Date(bookingData[key].end_date),
-                  status: bookingData[key].status
-                });
+                  user_id: data.user_id,
+                  listing_id: data.listing_id,
+                  start_date: new Date(data.start_date),
+                  end_date: new Date(data.end_date),
+                  status: data.status
+                };
               }
-            }
-            return bookings;
+              return null;
+            }).filter(booking => booking !== null) as Booking[];
           })
         );
       })
     );
   }
+
 
   cancelBooking(bookingId: string): Observable<void> {
     return this.authService.user.pipe(

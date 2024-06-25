@@ -9,7 +9,6 @@ import { AuthService } from 'src/app/auth/auth.service';
     providedIn: 'root'
 })
 export class SpecialRequestService {
-    private baseUrl: string = 'https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/special_requests';
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -27,7 +26,7 @@ export class SpecialRequestService {
                     throw new Error('No user found or user is not authenticated!');
                 }
                 return this.http.post<{ name: string }>(
-                    `${this.baseUrl}.json?auth=${user.token}`,
+                    `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/special_requests.json?auth=${user.token}`,
                     { ...newRequest, id: null }
                 );
             })
@@ -42,7 +41,7 @@ export class SpecialRequestService {
                     throw new Error('No user found or user is not authenticated!');
                 }
                 return this.http.get<{ [key: string]: SpecialRequest }>(
-                    `${this.baseUrl}.json?orderBy="booking_id"&equalTo="${bookingId}"&auth=${user.token}`
+                    `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/special_requests.json?orderBy="booking_id"&equalTo="${bookingId}"&auth=${user.token}`
                 ).pipe(
                     map((specialRequestData: { [key: string]: SpecialRequest }) => {
                         const specialRequests: SpecialRequest[] = [];
@@ -66,7 +65,7 @@ export class SpecialRequestService {
                     throw new Error('No user found or user is not authenticated!');
                 }
                 return this.http.delete<void>(
-                    `${this.baseUrl}/${requestId}.json?auth=${user.token}`
+                    `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/special_requests/${requestId}.json?auth=${user.token}`
                 );
             })
         );

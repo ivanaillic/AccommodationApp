@@ -41,8 +41,6 @@ export class ListingElementComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   async rezervisiSmestaj() {
 
     if (this.userId) {

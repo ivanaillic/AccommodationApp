@@ -18,22 +18,18 @@ export class ExplorePage implements OnInit {
 
   constructor(private listingsService: ListingsService, private modalController: ModalController, public authService: AuthService) { }
 
-
-
   ngOnInit() {
     this.listingsService.getListings().subscribe((listings) => {
       this.listings = listings;
       this.filteredListings = listings;
     });
-
-    console.log("Is user authenticated:", this.authService.isUserAuthenticated);
   }
 
 
   ionViewWillEnter() {
     this.listingsService.fetchListings().subscribe(
       (listingsData: any) => {
-        // this.listings = listingsData;
+
       });
   }
 

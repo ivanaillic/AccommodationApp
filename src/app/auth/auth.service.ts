@@ -56,7 +56,6 @@ export class AuthService {
           userData.idToken,
           expirationTime
         );
-        localStorage.setItem('userData', JSON.stringify(newUser));
         this._user.next(newUser);
         this._isUserAuthenticated.next(true);
       })
@@ -74,42 +73,15 @@ export class AuthService {
     );
   }
 
-  autoLogin() {
-    const userData: {
-      id: string;
-      email: string;
-      _token: string;
-      _tokenExpirationDate: string;
-    } = JSON.parse(localStorage.getItem('userData')!);
-
-    if (!userData) {
-      return;
-    }
-
-    const loadedUser = new User(
-      userData.id,
-      userData.email,
-      userData._token,
-      new Date(userData._tokenExpirationDate)
-    );
-
-    if (loadedUser.token) {
-      this._user.next(loadedUser);
-      this._isUserAuthenticated.next(true);
-    }
-  }
-
   logOut() {
     this._isUserAuthenticated.next(false);
     this._user.next(null);
-    localStorage.removeItem('userData');
   }
 
   getUserId(): Observable<string | null> {
     return this._user.pipe(
       map(user => {
         const userId = user ? user.id : null;
-        console.log(`getUserId: ${userId}`);
         return userId;
       })
     );
