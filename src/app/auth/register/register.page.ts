@@ -20,8 +20,8 @@ export class RegisterPage implements OnInit {
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
+      name: [null, Validators.required],
+      surname: [null, Validators.required],
       age: [null, [Validators.required, Validators.min(18)]],
       username: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],

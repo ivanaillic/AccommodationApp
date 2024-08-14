@@ -20,7 +20,7 @@ export class MyListingsPage implements OnInit {
     private listingsService: ListingsService,
     private authService: AuthService,
     private modalController: ModalController,
-    private location: Location
+    private location: Location,
   ) {
     this.userId$ = this.authService.getUserId();
   }
@@ -66,4 +66,6 @@ export class MyListingsPage implements OnInit {
   goBack() {
     this.location.back();
   }
+
+
 }

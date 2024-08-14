@@ -16,10 +16,9 @@
           <ion-col size-sm="6" offset-sm="3">
             <ion-item>
               <ion-label position="floating">Ime</ion-label>
-              <ion-input type="text" formControlName="firstName"></ion-input>
+              <ion-input type="text" formControlName="name"></ion-input>
             </ion-item>
-            <ion-text *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
-              color="danger">
+            <ion-text *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" color="danger">
               Unesite ime.
             </ion-text>
           </ion-col>
@@ -29,9 +28,9 @@
           <ion-col size-sm="6" offset-sm="3">
             <ion-item>
               <ion-label position="floating">Prezime</ion-label>
-              <ion-input type="text" formControlName="lastName"></ion-input>
+              <ion-input type="text" formControlName="surname"></ion-input>
             </ion-item>
-            <ion-text *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
+            <ion-text *ngIf="registerForm.get('surname')?.invalid && registerForm.get('surname')?.touched"
               color="danger">
               Unesite prezime.
             </ion-text>

@@ -30,6 +30,9 @@
       </ion-label>
     </ion-item>
 
-    <ion-button expand="block" class="custom-button" (click)="rezervisiSmestaj()">Rezerviši smeštaj</ion-button>
+    <ion-button *ngIf="isOwner" expand="block" class="custom-button" (click)="pogledajRezervacije()">Pogledaj
+      rezervacije</ion-button>
+    <ion-button *ngIf="!isOwner" expand="block" class="custom-button" (click)="rezervisiSmestaj()">Rezerviši
+      smeštaj</ion-button>
   </ion-card-content>
 </ion-card>

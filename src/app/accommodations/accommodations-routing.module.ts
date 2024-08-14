@@ -49,6 +49,10 @@ const routes: Routes = [
           {
             path: 'explore',
             loadChildren: () => import('./listings/explore/explore.module').then(m => m.ExplorePageModule)
+          },
+          {
+            path: 'listing-bookings/:listingId',
+            loadChildren: () => import('./listings/listing-bookings/listing-bookings.module').then(m => m.ListingBookingsPageModule)
           }
         ]
       },
@@ -67,12 +71,20 @@ const routes: Routes = [
   },
   {
     path: 'my-listings',
-    loadChildren: () => import('./my-listings/my-listings.module').then(m => m.MyListingsPageModule)
+    loadChildren: () => import('./my-listings/my-listings.module').then(m => m.MyListingsPageModule),
   },
   {
     path: 'edit-listing-modal',
     loadChildren: () => import('./edit-listing-modal/edit-listing-modal.module').then(m => m.EditListingModalPageModule)
   },
+  {
+    path: 'users/:userId',
+    loadChildren: () => import('./users/users.module').then(m => m.UsersPageModule)
+  },
+
+
+
+
 
 ];
 

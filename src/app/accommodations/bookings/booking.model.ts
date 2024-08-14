@@ -4,5 +4,5 @@ export interface Booking {
     listing_id: string;
     start_date: Date;
     end_date: Date;
-    status: string;
+    status: 'pending' | 'confirmed' | 'cancelled';
 }

@@ -31,6 +31,11 @@ export class ListingElementComponent implements OnInit, OnDestroy {
       if (userId) {
         this.userId = userId;
         console.log(`User ID: ${this.userId}`);
+
+        this.bookingService.isListingOwner(this.listing.id, this.userId).subscribe(isOwner => {
+          this.isOwner = isOwner;
+          console.log(`Is owner: ${this.isOwner}`);
+        });
       }
     });
   }
@@ -47,25 +52,17 @@ export class ListingElementComponent implements OnInit, OnDestroy {
       this.bookingService.isListingOwner(this.listing.id, this.userId).subscribe(async isOwner => {
         console.log(`Is owner: ${isOwner}`);
 
-        if (isOwner) {
-          await this.showAlert('Greška', 'Ne možete rezervisati sopstveni oglas.');
-        } else {
-          this.router.navigate(['/accommodations/tabs/bookings/booking', this.listing.id]);
-        }
+        this.router.navigate(['/accommodations/tabs/bookings/booking', this.listing.id]);
+
       });
     } else {
       this.router.navigate(['/auth/login']);
     }
   }
 
-  private async showAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header: header,
-      message: message,
-      buttons: ['OK']
-    });
-
-    await alert.present();
+  pogledajRezervacije() {
+    this.router.navigate(['/accommodations/tabs/listings/listing-bookings', this.listing.id]);
   }
+
 }
 

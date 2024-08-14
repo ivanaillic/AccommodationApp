@@ -7,10 +7,17 @@ const routes: Routes = [
   {
     path: '',
     component: ListingsPage
-  },  {
+  },
+  {
     path: 'explore',
-    loadChildren: () => import('./explore/explore.module').then( m => m.ExplorePageModule)
+    loadChildren: () => import('./explore/explore.module').then(m => m.ExplorePageModule)
+  },
+  {
+    path: 'listing-bookings/:listingId',
+    loadChildren: () => import('./listing-bookings/listing-bookings.module').then(m => m.ListingBookingsPageModule)
   }
+
+
 
 ];
 
@@ -18,4 +25,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ListingsPageRoutingModule {}
+export class ListingsPageRoutingModule { }

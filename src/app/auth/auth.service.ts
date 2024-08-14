@@ -16,8 +16,8 @@ export interface AuthResponseData {
 }
 
 export interface UserData {
-  name?: string;
-  surname?: string;
+  name: string;  // Polje nije opcionalno
+  surname: string;  // Polje nije opcionalno
   email: string;
   password: string;
   age?: number;
@@ -70,6 +70,39 @@ export class AuthService {
         password: user.password,
         returnSecureToken: true
       }
+    ).pipe(
+      tap((userData) => {
+        const expirationTime = new Date(
+          new Date().getTime() + +userData.expiresIn * 1000
+        );
+        const newUser = new User(
+          userData.localId,
+          userData.email,
+          userData.idToken,
+          expirationTime
+        );
+        this._user.next(newUser);
+        this._isUserAuthenticated.next(true);
+
+        // Sačuvaj dodatne podatke korisnika u Realtime Database
+        this.saveUserData(userData.localId, userData.idToken, user);
+      })
+    );
+  }
+
+  private saveUserData(userId: string, idToken: string, userData: UserData) {
+    this.http.put(
+      `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json?auth=${idToken}`,
+      {
+        name: userData.name,
+        surname: userData.surname,
+        email: userData.email,
+        age: userData.age,
+        username: userData.username
+      }
+    ).subscribe(
+      response => console.log("Podaci o korisniku su uspešno sačuvani", response),
+      error => console.error("Neuspešno čuvanje podataka o korisniku", error)
     );
   }
 

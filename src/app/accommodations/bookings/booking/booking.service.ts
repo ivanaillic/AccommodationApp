@@ -11,7 +11,7 @@ interface BookingData {
   listing_id: string;
   start_date: string;
   end_date: string;
-  status: string;
+  status: 'pending' | 'confirmed' | 'cancelled';
 }
 
 @Injectable({
@@ -246,4 +246,70 @@ export class BookingService {
       })
     );
   }
+
+  getBookingsForListingOwner(listingId: string): Observable<Booking[]> {
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
+        }
+        return this.http.get<{ [key: string]: BookingData }>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings.json?auth=${user.token!}`
+        ).pipe(
+          map(bookingData => {
+            return Object.keys(bookingData)
+              .map(key => {
+                const data = bookingData[key];
+                if (data.listing_id === listingId) {
+                  return {
+                    id: key,
+                    user_id: data.user_id,
+                    listing_id: data.listing_id,
+                    start_date: new Date(data.start_date),
+                    end_date: new Date(data.end_date),
+                    status: data.status
+                  };
+                }
+                return null;
+              })
+              .filter(booking => booking !== null) as Booking[];
+          })
+        );
+      })
+    );
+  }
+
+
+
+
+  updateBookingStatus(bookingId: string, newStatus: 'pending' | 'confirmed' | 'cancelled'): Observable<void> {
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        if (!user || !user.token) {
+          throw new Error('No user found or user is not authenticated!');
+        }
+        return this.http.patch<void>(
+          `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/bookings/${bookingId}.json?auth=${user.token!}`,
+          { status: newStatus }
+        );
+      }),
+      switchMap(() => this.bookings.pipe(
+        take(1),
+        map(bookings => {
+          const updatedBookings = bookings.map(booking =>
+            booking.id === bookingId ? { ...booking, status: newStatus } : booking
+          );
+          this._bookings.next(updatedBookings);
+          return;
+        })
+      ))
+    );
+  }
+
+
+
+
+
 }
