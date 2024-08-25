@@ -3,7 +3,7 @@ import { ListingsService } from '../listings/listings.service';
 import { Listing } from '../listings/listing.model';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { EditListingModalPage } from '../edit-listing-modal/edit-listing-modal.page';
 import { Location } from '@angular/common';
 
@@ -21,6 +21,7 @@ export class MyListingsPage implements OnInit {
     private authService: AuthService,
     private modalController: ModalController,
     private location: Location,
+    private alertController: AlertController
   ) {
     this.userId$ = this.authService.getUserId();
   }
@@ -39,11 +40,27 @@ export class MyListingsPage implements OnInit {
     });
   }
 
-  onDeleteListing(id: string) {
-    this.listingsService.deleteListing(id).subscribe(() => {
+  async onDeleteListing(id: string) {
+    try {
+      await this.listingsService.deleteListing(id).toPromise();
       this.loadMyListings();
-    });
+
+      const alert = await this.alertController.create({
+        header: 'Uspešno!',
+        message: 'Oglas je uspešno uklonjen.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    } catch (error) {
+      const alert = await this.alertController.create({
+        header: 'Greška',
+        message: 'Greška prilikom brisanja oglasa.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
   }
+
 
   async openEditModal(listing: Listing) {
     const modal = await this.modalController.create({
@@ -55,10 +72,26 @@ export class MyListingsPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    if (data && data.updatedListing) {
-      const index = this.myListings.findIndex(item => item.id === data.updatedListing.id);
-      if (index !== -1) {
-        this.myListings[index] = data.updatedListing;
+    if (data) {
+      if (data.updatedListing) {
+        const index = this.myListings.findIndex(item => item.id === data.updatedListing.id);
+        if (index !== -1) {
+          this.myListings[index] = data.updatedListing;
+
+          const alert = await this.alertController.create({
+            header: 'Uspešno!',
+            message: 'Oglas je uspešno ažuriran.',
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      } else {
+        const alert = await this.alertController.create({
+          header: 'Greška',
+          message: 'Greška pri ažuriranju oglasa.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     }
   }

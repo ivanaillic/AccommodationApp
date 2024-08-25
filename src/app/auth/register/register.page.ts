@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,8 @@ export class RegisterPage implements OnInit {
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private alertController: AlertController
   ) { }
 
   ngOnInit(): void {
@@ -29,17 +31,27 @@ export class RegisterPage implements OnInit {
     });
   }
 
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log('Forma je validna i podaci su:', this.registerForm.value);
       this.authService.register(this.registerForm.value).subscribe(
-        resData => {
-          console.log('Registracija uspela');
-          console.log(resData);
+        async resData => {
+          console.log('Registracija uspela', resData);
+          await this.presentAlert('Registracija uspešna', 'Uspešno ste kreirali nalog');
           this.router.navigate(['/auth/login']);
         },
-        error => {
+        async error => {
           console.error('Greška prilikom registracije:', error);
+          await this.presentAlert('Greška', 'Greška prilikom kreiranja naloga');
         }
       );
     } else {

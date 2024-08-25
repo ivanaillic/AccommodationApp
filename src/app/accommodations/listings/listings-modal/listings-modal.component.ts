@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { ListingsService } from '../listings.service';
 import { AuthService } from 'src/app/auth/auth.service';
 
@@ -15,6 +15,7 @@ export class ListingsModalComponent {
   constructor(
     private formBuilder: FormBuilder,
     private modalController: ModalController,
+    private alertController: AlertController,
     private listingsService: ListingsService,
     private authService: AuthService
   ) {
@@ -32,7 +33,7 @@ export class ListingsModalComponent {
     this.modalController.dismiss();
   }
 
-  addListing() {
+  async addListing() {
     if (this.listingForm.valid) {
       this.authService.getUserId().subscribe(userId => {
         if (userId) {
@@ -45,21 +46,32 @@ export class ListingsModalComponent {
             this.listingForm.value.image_url,
             userId
           ).subscribe(
-            (res) => {
+            async (res) => {
               console.log('New Listing added:', res);
+              const alert = await this.alertController.create({
+                header: 'Uspeh',
+                message: 'Uspešno kreiran oglas.',
+                buttons: ['OK']
+              });
+              await alert.present();
               this.dismiss();
             },
-            (error) => {
+            async (error) => {
               console.error('Error adding new listing:', error);
+              const alert = await this.alertController.create({
+                header: 'Greška',
+                message: 'Greška prilikom kreiranja oglasa.',
+                buttons: ['OK']
+              });
+              await alert.present();
             }
           );
         } else {
-          console.error('User ID not found');
+          console.error('Korisnik nije pronadjen');
         }
       });
     } else {
       console.error('Form is invalid');
     }
   }
-
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Booking } from '../../bookings/booking.model';
 import { BookingService } from '../../bookings/booking/booking.service';
 import { UserService } from '../../users/users.service';
+import { AlertController } from '@ionic/angular'; // Import AlertController
 
 @Component({
   selector: 'app-listing-bookings',
@@ -17,7 +18,8 @@ export class ListingBookingsPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private bookingService: BookingService,
-    private userService: UserService
+    private userService: UserService,
+    private alertController: AlertController // Inject AlertController
   ) { }
 
   ngOnInit() {
@@ -34,10 +36,25 @@ export class ListingBookingsPage implements OnInit {
     });
   }
 
-  onChangeStatus(bookingId: string, newStatus: 'pending' | 'confirmed' | 'cancelled') {
-    this.bookingService.updateBookingStatus(bookingId, newStatus).subscribe(() => {
+  async onChangeStatus(bookingId: string, newStatus: 'pending' | 'confirmed' | 'cancelled') {
+    try {
+      await this.bookingService.updateBookingStatus(bookingId, newStatus).toPromise();
+      await this.presentAlert('Uspeh', 'Uspesno ste promenili status rezervacije');
       this.loadBookings();
+    } catch (error) {
+      console.error('Greška prilikom postavljanja statusa rezervacije:', error);
+      await this.presentAlert('Greska', 'Greška prilikom postavljanja statusa rezervacije');
+    }
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
     });
+
+    await alert.present();
   }
 
   loadUserFullName(userId: string, bookingId: string) {
