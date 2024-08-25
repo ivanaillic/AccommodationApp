@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Booking } from '../../bookings/booking.model';
-import { BookingService } from '../../bookings/booking/booking.service';
+
 import { UserService } from '../../users/users.service';
-import { AlertController } from '@ionic/angular'; // Import AlertController
+import { AlertController } from '@ionic/angular';
+import { BookingsService } from '../../bookings/bookings.service';
 
 @Component({
   selector: 'app-listing-bookings',
@@ -17,9 +18,9 @@ export class ListingBookingsPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private bookingService: BookingService,
+    private bookingsService: BookingsService,
     private userService: UserService,
-    private alertController: AlertController // Inject AlertController
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -28,7 +29,7 @@ export class ListingBookingsPage implements OnInit {
   }
 
   loadBookings() {
-    this.bookingService.getBookingsForListingOwner(this.listingId).subscribe(bookings => {
+    this.bookingsService.getBookingsForListingOwner(this.listingId).subscribe(bookings => {
       this.bookings = bookings;
       this.bookings.forEach(booking => {
         this.loadUserFullName(booking.user_id, booking.id);
@@ -38,7 +39,7 @@ export class ListingBookingsPage implements OnInit {
 
   async onChangeStatus(bookingId: string, newStatus: 'pending' | 'confirmed' | 'cancelled') {
     try {
-      await this.bookingService.updateBookingStatus(bookingId, newStatus).toPromise();
+      await this.bookingsService.updateBookingStatus(bookingId, newStatus).toPromise();
       await this.presentAlert('Uspeh', 'Uspesno ste promenili status rezervacije');
       this.loadBookings();
     } catch (error) {

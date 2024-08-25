@@ -4,10 +4,14 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { map, switchMap, take } from 'rxjs/operators';
 
+interface IUserService {
+    getUserFullName(userId: string): Observable<string>;
+}
+
 @Injectable({
     providedIn: 'root'
 })
-export class UserService {
+export class UserService implements IUserService {
 
     private baseUrl: string = 'https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/users';
 

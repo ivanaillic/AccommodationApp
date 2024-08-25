@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Booking } from '../booking.model';
-import { BookingService } from '../booking/booking.service';
+import { BookingsService } from '../bookings.service';
+
 
 
 @Component({
@@ -11,10 +12,10 @@ import { BookingService } from '../booking/booking.service';
 export class DetailsPage implements OnInit {
   bookings: Booking[] = [];
 
-  constructor(private bookingService: BookingService) { }
+  constructor(private bookingsService: BookingsService) { }
 
   ngOnInit() {
-    this.bookingService.fetchBookings().subscribe(bookings => {
+    this.bookingsService.fetchBookings().subscribe(bookings => {
       this.bookings = bookings;
     });
   }

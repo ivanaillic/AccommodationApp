@@ -16,18 +16,27 @@ export interface AuthResponseData {
 }
 
 export interface UserData {
-  name: string;  // Polje nije opcionalno
-  surname: string;  // Polje nije opcionalno
+  name: string;
+  surname: string;
   email: string;
   password: string;
   age?: number;
   username?: string;
 }
 
+interface IAuthService {
+  isUserAuthenticated: Observable<boolean>;
+  user: Observable<User | null>;
+  logIn(user: UserData): Observable<AuthResponseData>;
+  register(user: UserData): Observable<AuthResponseData>;
+  logOut(): void;
+  getUserId(): Observable<string | null>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements IAuthService {
   private _isUserAuthenticated = new BehaviorSubject<boolean>(false);
   private _user = new BehaviorSubject<User | null>(null);
 
@@ -83,8 +92,6 @@ export class AuthService {
         );
         this._user.next(newUser);
         this._isUserAuthenticated.next(true);
-
-        // Sačuvaj dodatne podatke korisnika u Realtime Database
         this.saveUserData(userData.localId, userData.idToken, user);
       })
     );

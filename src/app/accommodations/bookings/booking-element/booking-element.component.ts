@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Booking } from '../booking.model';
 import { ListingsService } from '../../listings/listings.service';
-import { BookingService } from '../booking/booking.service';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { BookingsService } from '../bookings.service';
 
 @Component({
   selector: 'app-booking-element',
@@ -22,7 +22,7 @@ export class BookingElementComponent implements OnInit, OnDestroy {
 
   constructor(
     private listingService: ListingsService,
-    private bookingService: BookingService,
+    private bookingsService: BookingsService,
     private alertController: AlertController,
     private loadingController: LoadingController,
     private navCtrl: NavController
@@ -62,7 +62,7 @@ export class BookingElementComponent implements OnInit, OnDestroy {
             });
             await loading.present();
 
-            this.bookingService.cancelBooking(bookingId).subscribe(
+            this.bookingsService.cancelBooking(bookingId).subscribe(
               async () => {
                 await loading.dismiss();
 
@@ -97,7 +97,7 @@ export class BookingElementComponent implements OnInit, OnDestroy {
   }
 
   fetchBookings() {
-    this.bookingsSubscription = this.bookingService.getBookingsByUserId(this.userId).subscribe(bookings => {
+    this.bookingsSubscription = this.bookingsService.getBookingsByUserId(this.userId).subscribe(bookings => {
       this.bookings = bookings;
     });
   }

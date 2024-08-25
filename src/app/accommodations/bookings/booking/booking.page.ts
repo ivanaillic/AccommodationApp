@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { BookingService } from './booking.service';
+
 import { Booking } from '../booking.model';
+import { BookingsService } from '../bookings.service';
 
 @Component({
   selector: 'app-booking',
@@ -26,7 +27,7 @@ export class BookingPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private navCtrl: NavController,
     private alertController: AlertController,
-    private bookingService: BookingService,
+    private bookingsService: BookingsService,
     private authService: AuthService,
     private loadingController: LoadingController
   ) { }
@@ -55,7 +56,7 @@ export class BookingPage implements OnInit, OnDestroy {
   }
 
   fetchBookings() {
-    this.bookingsSubscription = this.bookingService.getBookingsByUserId(this.userId).subscribe(bookings => {
+    this.bookingsSubscription = this.bookingsService.getBookingsByUserId(this.userId).subscribe(bookings => {
       this.bookings = bookings;
     });
   }
@@ -87,7 +88,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
     try {
 
-      const areDatesAvailable = await this.bookingService.areDatesAvailable(this.listingId, this.startDate, this.endDate).toPromise();
+      const areDatesAvailable = await this.bookingsService.areDatesAvailable(this.listingId, this.startDate, this.endDate).toPromise();
       await loading.dismiss();
 
       if (!areDatesAvailable) {
@@ -95,7 +96,7 @@ export class BookingPage implements OnInit, OnDestroy {
         return;
       }
 
-      await this.bookingService.addBooking(this.listingId, this.startDate, this.endDate, specialRequests).toPromise();
+      await this.bookingsService.addBooking(this.listingId, this.startDate, this.endDate, specialRequests).toPromise();
       await this.showAlert('Uspeh', 'Uspešno ste rezervisali smeštaj!');
       this.navCtrl.back();
     } catch (error) {
@@ -123,7 +124,7 @@ export class BookingPage implements OnInit, OnDestroy {
             });
             await loading.present();
 
-            this.bookingService.cancelBooking(bookingId).subscribe({
+            this.bookingsService.cancelBooking(bookingId).subscribe({
               next: async () => {
                 await loading.dismiss();
                 await this.showAlert('Uspeh', 'Rezervacija je uspešno otkazana!');

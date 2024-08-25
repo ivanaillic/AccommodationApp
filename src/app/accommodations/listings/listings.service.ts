@@ -5,6 +5,7 @@ import { tap, switchMap, take, map, catchError } from 'rxjs/operators';
 import { Listing } from "./listing.model";
 import { AuthService } from 'src/app/auth/auth.service';
 
+
 interface ListingData {
   title: string;
   description: string;
@@ -15,14 +16,33 @@ interface ListingData {
   user_id: string;
 }
 
+interface IListingsService {
+  getListings(): Observable<Listing[]>;
+  addListing(
+    title: string,
+    description: string,
+    price_per_day: number,
+    location: string,
+    capacity_persons: number,
+    imageUrl: string,
+    userId: string
+  ): Observable<Listing[]>;
+  fetchListings(): Observable<Listing[]>;
+  deleteListing(id: string): Observable<Listing[]>;
+  updateListing(id: string, updatedListingData: Partial<ListingData>): Observable<Listing[]>;
+  getListing(id: string): Observable<Listing>;
+  getListingTitle(listingId: string): Observable<string>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class ListingsService {
+export class ListingsService implements IListingsService {
 
   private _listings = new BehaviorSubject<Listing[]>([]);
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient,
+    private authService: AuthService) { }
 
   getListings() {
     return this._listings.asObservable();
@@ -70,11 +90,11 @@ export class ListingsService {
     );
   }
 
-  fetchListings() {
-    return this.http.get<{ [key: string]: ListingData }>(
+  fetchListings(): Observable<Listing[]> {
+    return this.http.get<{ [key: string]: Listing }>(
       `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings.json`
     ).pipe(
-      tap((listingsData) => {
+      map((listingsData) => {
         const listings: Listing[] = [];
         for (const key in listingsData) {
           if (listingsData.hasOwnProperty(key)) {
@@ -90,6 +110,9 @@ export class ListingsService {
             });
           }
         }
+        return listings;
+      }),
+      tap(listings => {
         this._listings.next(listings);
       }),
       catchError(error => {

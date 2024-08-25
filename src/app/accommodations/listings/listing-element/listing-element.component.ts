@@ -3,8 +3,9 @@ import { Listing } from '../listing.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { BookingService } from '../../bookings/booking/booking.service';
+
 import { AlertController } from '@ionic/angular';
+import { BookingsService } from '../../bookings/bookings.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class ListingElementComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private bookingService: BookingService,
+    private bookingsService: BookingsService,
     private alertController: AlertController
   ) { }
 
@@ -32,7 +33,7 @@ export class ListingElementComponent implements OnInit, OnDestroy {
         this.userId = userId;
         console.log(`User ID: ${this.userId}`);
 
-        this.bookingService.isListingOwner(this.listing.id, this.userId).subscribe(isOwner => {
+        this.bookingsService.isListingOwner(this.listing.id, this.userId).subscribe(isOwner => {
           this.isOwner = isOwner;
           console.log(`Is owner: ${this.isOwner}`);
         });
@@ -49,7 +50,7 @@ export class ListingElementComponent implements OnInit, OnDestroy {
   async rezervisiSmestaj() {
 
     if (this.userId) {
-      this.bookingService.isListingOwner(this.listing.id, this.userId).subscribe(async isOwner => {
+      this.bookingsService.isListingOwner(this.listing.id, this.userId).subscribe(async isOwner => {
         console.log(`Is owner: ${isOwner}`);
 
         this.router.navigate(['/accommodations/tabs/bookings/booking', this.listing.id]);

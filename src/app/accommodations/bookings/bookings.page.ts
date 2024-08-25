@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Booking } from './booking.model';
-import { BookingService } from './booking/booking.service';
+import { BookingsService } from './bookings.service';
+
 
 @Component({
   selector: 'app-bookings',
@@ -12,14 +13,14 @@ export class BookingsPage implements OnInit {
   bookings: Booking[] = [];
 
   constructor(
-    private bookingService: BookingService,
+    private bookingsService: BookingsService,
     private authService: AuthService
   ) { }
 
   ngOnInit() {
     this.authService.getUserId().subscribe(userId => {
       if (userId) {
-        this.bookingService.getBookingsByUserId(userId).subscribe(bookings => {
+        this.bookingsService.getBookingsByUserId(userId).subscribe(bookings => {
           this.bookings = bookings;
         });
       }
