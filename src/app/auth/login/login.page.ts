@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 
 
 @Component({
@@ -13,7 +13,9 @@ import { AlertController } from '@ionic/angular';
 export class LoginPage implements OnInit {
   isLoading = false;
 
-  constructor(private authService: AuthService, private router: Router, private alertController: AlertController) { }
+  constructor(private authService: AuthService, private router: Router, private alertController: AlertController,
+    private navCtrl: NavController
+  ) { }
 
   ngOnInit() {
   }
@@ -27,7 +29,7 @@ export class LoginPage implements OnInit {
         this.router.navigateByUrl('/accommodations/tabs/homepage');
       }, async (error) => {
         this.isLoading = false;
-        let errorMessage = 'Greška prilikom prijave';
+        let errorMessage = 'Niste uneli ispravne kredencijale';
 
         if (error.status === 400) {
           errorMessage = 'Niste uneli ispravne kredencijale';
@@ -37,7 +39,7 @@ export class LoginPage implements OnInit {
       });
     } else {
 
-      this.presentAlert('Greška', 'Unesite email i lozinku u ispravnom formatu.', 'OK');
+      this.presentAlert('Greška', 'Niste uneli ispravne kredencijale', 'OK');
     }
   }
 
@@ -54,6 +56,9 @@ export class LoginPage implements OnInit {
     });
 
     await alert.present();
+  }
+  goBack() {
+    this.navCtrl.back();
   }
 
 }

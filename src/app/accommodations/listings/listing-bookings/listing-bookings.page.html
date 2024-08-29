@@ -1,7 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-button (click)="goBack()">
+        <ion-icon slot="start" name="arrow-back-outline" style="color: white;"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Rezervacije</ion-title>
   </ion-toolbar>

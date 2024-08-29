@@ -21,7 +21,6 @@ export interface UserData {
   email: string;
   password: string;
   age?: number;
-  username?: string;
 }
 
 interface IAuthService {
@@ -104,8 +103,7 @@ export class AuthService implements IAuthService {
         name: userData.name,
         surname: userData.surname,
         email: userData.email,
-        age: userData.age,
-        username: userData.username
+        age: userData.age
       }
     ).subscribe(
       response => console.log("Podaci o korisniku su uspešno sačuvani", response),

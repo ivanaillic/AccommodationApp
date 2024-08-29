@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +17,8 @@ export class RegisterPage implements OnInit {
     private authService: AuthService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit(): void {
@@ -25,7 +26,6 @@ export class RegisterPage implements OnInit {
       name: [null, Validators.required],
       surname: [null, Validators.required],
       age: [null, [Validators.required, Validators.min(18)]],
-      username: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.minLength(7)]]
     });
@@ -57,5 +57,9 @@ export class RegisterPage implements OnInit {
     } else {
       console.log('Molimo popunite ispravno sva polja.');
     }
+  }
+
+  goBack() {
+    this.navCtrl.back();
   }
 }

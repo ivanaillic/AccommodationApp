@@ -71,7 +71,7 @@ export class ListingsModalComponent {
         }
       });
     } else {
-      console.error('Form is invalid');
+      console.error('Forma nije validna');
     }
   }
 }

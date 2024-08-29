@@ -74,10 +74,10 @@ export class BookingPage implements OnInit, OnDestroy {
     const currentDate = new Date().toISOString().split('T')[0];
 
     if (this.startDate < currentDate || this.endDate < currentDate) {
-      await this.showAlert('Greška', 'Datumi ne mogu biti u prošlosti');
+      await this.showAlert('Greška', 'Odabrani datumi ne mogu biti u prošlosti. Pokušajte ponovo.');
       return;
     } else if (this.startDate >= this.endDate) {
-      await this.showAlert('Greška', 'Početni datum mora biti pre krajnjeg datuma');
+      await this.showAlert('Greška', 'Početni datum ne može biti posle krajnjeg. Pokušajte ponovo.');
       return;
     }
 
@@ -92,12 +92,12 @@ export class BookingPage implements OnInit, OnDestroy {
       await loading.dismiss();
 
       if (!areDatesAvailable) {
-        await this.showAlert('Greška', 'Datumi su već zauzeti. Molimo odaberite druge datume.');
+        await this.showAlert('Greška', 'Odabrani termini su već popunjeni. Pokušajte ponovo. ');
         return;
       }
 
       await this.bookingsService.addBooking(this.listingId, this.startDate, this.endDate, specialRequests).toPromise();
-      await this.showAlert('Uspeh', 'Uspešno ste rezervisali smeštaj!');
+      await this.showAlert('Uspeh', 'Oglas je uspešno rezervisan');
       this.navCtrl.back();
     } catch (error) {
       await loading.dismiss();
@@ -152,5 +152,9 @@ export class BookingPage implements OnInit, OnDestroy {
     });
 
     await alert.present();
+  }
+
+  goBack() {
+    this.navCtrl.back();
   }
 }

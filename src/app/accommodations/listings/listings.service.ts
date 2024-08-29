@@ -174,7 +174,7 @@ export class ListingsService implements IListingsService {
       take(1),
       switchMap(user => {
         if (!user) {
-          throw new Error('No user found!');
+          throw new Error('Korisnik nije pronadjen');
         }
         return this.http.patch(
           `https://accommodation-app-a89f8-default-rtdb.europe-west1.firebasedatabase.app/listings/${id}.json?auth=${user.token}`,

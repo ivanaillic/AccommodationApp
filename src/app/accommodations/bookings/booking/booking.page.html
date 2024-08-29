@@ -1,5 +1,10 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="start" name="arrow-back-outline" style="color: white;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>Rezervacija</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -26,7 +31,7 @@
         </ion-item>
       </ion-list>
       <ion-button expand="block" (click)="addSpecialRequest()">Dodaj specijalni zahtev</ion-button>
-      <ion-button expand="block" (click)="confirmBooking()">Potvrdi</ion-button>
+      <ion-button expand="block" (click)="confirmBooking()">Potvrdite unos</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

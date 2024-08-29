@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Booking } from '../../bookings/booking.model';
 
 import { UserService } from '../../users/users.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { BookingsService } from '../../bookings/bookings.service';
 
 @Component({
@@ -20,7 +20,8 @@ export class ListingBookingsPage implements OnInit {
     private route: ActivatedRoute,
     private bookingsService: BookingsService,
     private userService: UserService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -68,5 +69,8 @@ export class ListingBookingsPage implements OnInit {
         this.userFullNames[bookingId] = 'Nepoznat korisnik';
       }
     );
+  }
+  goBack() {
+    this.navCtrl.back();
   }
 }
